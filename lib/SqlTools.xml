@@ -1,0 +1,737 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SqlTools</name>
+    </assembly>
+    <members>
+        <member name="T:SqlTools.ConnectionChangedEventArgs">
+            <summary>
+            Represents the connection string change information passed to the ConnectionChanged event.
+            </summary>
+        </member>
+        <member name="M:SqlTools.ConnectionChangedEventArgs.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the ConnectionChangedEventArgs class.
+            </summary>
+        </member>
+        <member name="P:SqlTools.ConnectionChangedEventArgs.OldConnectionString">
+            <summary>
+            Gets the old connection string.
+            </summary>
+            <value>The old connection string.</value>
+        </member>
+        <member name="P:SqlTools.ConnectionChangedEventArgs.NewConnectionString">
+            <summary>
+            Gets the new connection string.
+            </summary>
+            <value>The new connection string.</value>
+        </member>
+        <member name="T:SqlTools.DbHelperBase">
+            <summary>
+            Implementation of IDbhelper for SqlServer databases.
+            </summary>
+        </member>
+        <member name="T:SqlTools.IDbHelper">
+            <summary>
+            Specifies common methods and properties for working with databases.
+            </summary>
+        </member>
+        <member name="T:SqlTools.IDbHelperTuple">
+            <summary>
+            Defines methods used for returning strongly typed resultsets.
+            </summary>
+        </member>
+        <member name="M:SqlTools.IDbHelperTuple.ExecuteTuple``1(System.String)">
+            <summary>
+            Executes the sql and returns a Tuple with one strongly typed property mapped to the first column in the resultset.
+            </summary>
+            <typeparam name="TFirst">The type of the first.</typeparam>
+            <param name="commandText">The command text.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.IDbHelperTuple.ExecuteTuple``1(System.Data.IDbCommand)">
+            <summary>
+            Executes the tuple.
+            </summary>
+            <typeparam name="TFirst">The type of the first.</typeparam>
+            <param name="command">The command.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.IDbHelperTuple.ExecuteTuple``2(System.String)">
+            <summary>
+            Executes the tuple.
+            </summary>
+            <typeparam name="TFirst">The type of the first.</typeparam>
+            <typeparam name="TSecond">The type of the second.</typeparam>
+            <param name="commandText">The command text.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.IDbHelperTuple.ExecuteTuple``2(System.Data.IDbCommand)">
+            <summary>
+            Executes the tuple.
+            </summary>
+            <typeparam name="TFirst">The type of the first.</typeparam>
+            <typeparam name="TSecond">The type of the second.</typeparam>
+            <param name="command">The command.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.IDbHelperTuple.ExecuteTuple``3(System.String)">
+            <summary>
+            Executes the tuple.
+            </summary>
+            <typeparam name="TFirst">The type of the first.</typeparam>
+            <typeparam name="TSecond">The type of the second.</typeparam>
+            <typeparam name="TThird">The type of the third.</typeparam>
+            <param name="commandText">The command text.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.IDbHelperTuple.ExecuteTuple``3(System.Data.IDbCommand)">
+            <summary>
+            Executes the tuple.
+            </summary>
+            <typeparam name="TFirst">The type of the first.</typeparam>
+            <typeparam name="TSecond">The type of the second.</typeparam>
+            <typeparam name="TThird">The type of the third.</typeparam>
+            <param name="command">The command.</param>
+            <returns></returns>
+        </member>
+        <member name="T:SqlTools.IDbHelperMap">
+            <summary>
+            Defines all of the methods used for mapping types to rows in resultsets.
+            </summary>
+        </member>
+        <member name="M:SqlTools.IDbHelperMap.ExecuteSingle``1(System.String)">
+            <summary>
+            Executes the sql statement and attempts to map the first row of the resultset to the
+            specified type T.  If there are no results, the default for type T is returned.  The names used
+            in the query MUST match the property names of the type T in order for the mapping to work.
+            </summary>
+            <typeparam name="T">Represents the type that will be mapped to the first row of the resultset.</typeparam>
+            <param name="commandText">The sql command to execute.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.IDbHelperMap.ExecuteSingle``1(System.Data.IDbCommand)">
+            <summary>
+            Executes the sql command and attempts to map the first row of the resultset to the
+            specified type T.  If there are no results, the default for type T is returned.  The names used
+            in the query MUST match the property names of the type T in order for the mapping to work.
+            </summary>
+            <typeparam name="T">Represents the type that will be mapped to the first row of the resultset.</typeparam>
+            <param name="command">The command to execute.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.IDbHelperMap.ExecuteMultiple``1">
+            <summary>
+            Selects all rows from the table with the same name as the type T.  
+            Attempts to map each row in the resultset to an instance of type T.  
+            If no results are returned from the query, the method should return null.  
+            The names used in the query MUST match the property names of the type T in order for the mapping to work.
+            </summary>
+            <typeparam name="T">Represents the type that will be be mapped to each row in the resultset.</typeparam>
+        </member>
+        <member name="M:SqlTools.IDbHelperMap.ExecuteMultiple``1(System.String)">
+            <summary>
+            Executes the sql statement and attempts to map each row in the resultset to an instance of type T.  If no
+            results are returned from the query, the method should return null.  The names used
+            in the query MUST match the property names of the type T in order for the mapping to work.
+            </summary>
+            <typeparam name="T">Represents the type that will be be mapped to each row in the resultset.</typeparam>
+            <param name="commandText">The sql command execute.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.IDbHelperMap.ExecuteMultiple``1(System.Data.IDbCommand)">
+            <summary>
+            Executes the sql command and attempts to map each row in the resultset to an instance of type T.  If no
+            results are returned from the query, the method should return null.  The names used
+            in the query MUST match the property names of the type T in order for the mapping to work.
+            </summary>
+            <typeparam name="T">Represents the type that will be be mapped to each row in the resultset.</typeparam>
+            <param name="command">The command to execute.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.IDbHelper.GetConnection">
+            <summary>
+            Implementing classes should return an open connection to the database.
+            </summary>
+            <returns>An open connection to the database.</returns>
+        </member>
+        <member name="M:SqlTools.IDbHelper.GetConnection(SqlTools.InitialConnectionStates)">
+            <summary>
+            Gets a connection to the database.
+            </summary>
+            <param name="initialState">Initial state of the database connection.</param>
+            <returns>A connection to the database.</returns>
+        </member>
+        <member name="M:SqlTools.IDbHelper.ExecuteScalar``1(System.String)">
+            <summary>
+            Executes a query and returns the value in the first column of the first row of the resultset.
+            </summary>
+            <typeparam name="T">The type of the value returned.</typeparam>
+            <param name="commandText">The query to execute.</param>
+            <returns>The value in the first column of the first row of the resultset.</returns>
+        </member>
+        <member name="M:SqlTools.IDbHelper.ExecuteScalar``1(System.Data.IDbCommand)">
+            <summary>
+            Executes a command a returns the value in the first column of the first row of the resultset.
+            </summary>
+            <typeparam name="T">The type of the value returned.</typeparam>
+            <param name="command">The command to execute.</param>
+            <returns>The value in the first column of the first row of the resultset.</returns>
+        </member>
+        <member name="M:SqlTools.IDbHelper.ExecuteArray``1(System.String)">
+            <summary>
+            Executes the query, and returns an array of values from the first column of all rows in the resultset.
+            </summary>
+            <typeparam name="TItem">The type of value in the first column.</typeparam>
+            <param name="commandText">The query to execute.</param>
+            <returns>
+            An array of values from the first column of all rows in the resultset.
+            </returns>
+        </member>
+        <member name="M:SqlTools.IDbHelper.ExecuteArray``1(System.String,SqlTools.ExecuteArrayOptions)">
+            <summary>
+            Executes the query, and returns an array of values from the first column of all rows in the resultset.
+            </summary>
+            <typeparam name="TItem">The type of value in the first column.</typeparam>
+            <param name="commandText">The query to execute.</param>
+            <param name="options">The options that are applied to how arrays are created.</param>
+            <returns>
+            An array of values from the first column of all rows in the resultset.
+            </returns>
+        </member>
+        <member name="M:SqlTools.IDbHelper.ExecuteArray``1(System.Data.IDbCommand)">
+            <summary>
+            Executes the command, and returns an array of values from the first column of all rows in the resultset.
+            </summary>
+            <typeparam name="TItem">The type of vlaue in the first column.</typeparam>
+            <param name="command">The query to execute.</param>
+            <returns>An array of value sfrom the first column of all rows in the resultset.</returns>
+        </member>
+        <member name="M:SqlTools.IDbHelper.ExecuteNonQuery(System.String)">
+            <summary>
+            Executes a query and returns the number of rows affected.
+            </summary>
+            <param name="commandText">The query to execute.</param>
+            <returns>The number of rows affected.</returns>
+        </member>
+        <member name="M:SqlTools.IDbHelper.ExecuteNonQuery(System.Data.IDbCommand)">
+            <summary>
+            Executes a command and returns the number of rows affected.
+            </summary>
+            <param name="command">The command to execute.</param>
+            <returns>The number of rows affected.</returns>
+        </member>
+        <member name="M:SqlTools.IDbHelper.ExecuteDataTable(System.String)">
+            <summary>
+            Executes a query and returns the results in a datatable.
+            </summary>
+            <param name="commandText">The query to execute.</param>
+            <returns>A datatable containing the results of executing the query.</returns>
+        </member>
+        <member name="M:SqlTools.IDbHelper.ExecuteDataTable(System.Data.IDbCommand)">
+            <summary>
+            Executes a command and returns the results in a datatable.
+            </summary>
+            <param name="command">The command to execute.</param>
+            <returns>A datatable containing the results of executing the command.</returns>
+        </member>
+        <member name="M:SqlTools.IDbHelper.ExecuteReader(System.String)">
+            <summary>
+            Executes a query and returns a data reader containing the results.
+            </summary>
+            <param name="commandText">The query to execute.</param>
+            <returns>A data reader containing the results of executing the query.</returns>
+        </member>
+        <member name="M:SqlTools.IDbHelper.ExecuteReader(System.Data.IDbCommand)">
+            <summary>
+            Executes a command and returns a data reader containing the results.
+            </summary>
+            <param name="command">The command to execute.</param>
+            <returns>A data reader containing the results of executing the command.</returns>
+        </member>
+        <member name="M:SqlTools.IDbHelper.ChangeConnection(System.String)">
+            <summary>
+            Changes the connection.
+            </summary>
+            <param name="connectionString">The connection string.</param>
+        </member>
+        <member name="P:SqlTools.IDbHelper.ConnectionString">
+            <summary>
+            Gets the connection string for the database.
+            </summary>
+        </member>
+        <member name="E:SqlTools.IDbHelper.ConnectionChanged">
+            <summary>
+            Occurs when [connection changed].
+            </summary>
+        </member>
+        <member name="P:SqlTools.IDbHelper.DefaultCommandTimeoutInSeconds">
+            <summary>
+            Gets or sets the default command timeout in seconds. 
+            The default value for this property is the same as the default for SqlCommand's CommandTimeout property.
+            </summary>
+            <value>The default command timeout in seconds.</value>
+        </member>
+        <member name="F:SqlTools.DbHelperBase.INITIAL_DEFAULT_COMMAND_TIMEOUT_IN_SECONDS">
+            <summary>
+            The initial value[Int32.MinValue] for DefaultCommandTimeoutInSeconds.
+            </summary>
+        </member>
+        <member name="F:SqlTools.DbHelperBase.INITIAL_COMMAND_PROVIDER_COMMAND_TIMEOUT">
+            <summary>
+            The initial value[Int32.MinValue] for CommandProviderCommandTimeout.
+            </summary>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.CreateCommand">
+            <summary>
+            Creates a provider specific implementation of IDbCommand.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.CreateConnection">
+            <summary>
+            Creates a provider specific implementation of IDbConnection.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.CreateDataAdapter(System.Data.IDbCommand)">
+            <summary>
+            Creates a provider specific implementation of IDbDataAdapter.
+            </summary>
+            <param name="command">The command used by the IDbDataAdapter.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.#ctor(System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the SqlDbHelper class.
+            </summary>
+            <param name="connectionString">The connection string.</param>
+            <param name="defaultCommandTimeoutInSeconds">The default command timeout in seconds. The default for this value is whatever SqlCommand.CommandTimeout returns which is usually 30.</param>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.GetConnection">
+            <summary>
+            Opens a connection to the database.
+            </summary>
+            <returns>An open connection to the database.</returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.GetConnection(SqlTools.InitialConnectionStates)">
+            <summary>
+            Gets a connection to the database.
+            </summary>
+            <param name="initialState">Indicates the state of the connection returned.</param>
+            <returns>A connection to the database, either open or closed.</returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.PrepCommand(System.Data.IDbCommand)">
+            <summary>
+            Preps the command.  Currently this just sets the appropriate command timeout.
+            </summary>
+            <param name="command">The command.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteScalar``1(System.String)">
+            <summary>
+            Executes the query, and returns the first column of the first row of the resultset.
+            </summary>
+            <typeparam name="T">The type of the data returned.</typeparam>
+            <param name="commandText">The query to execute.</param>
+            <returns>The first column of the first row of the result of executeing the query.</returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteScalar``1(System.Data.IDbCommand)">
+            <summary>
+            Executes the command, and returns the first column of the first row of the resultset.
+            </summary>
+            <typeparam name="T">The type of the data returned.</typeparam>
+            <param name="command">The command to execute.</param>
+            <returns>The first colunm of the first row of the result of executing the command.</returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteArray``1(System.String)">
+            <summary>
+            Executes the query and returns an array of all of the values of the first column of all rows in the resultset.
+            </summary>
+            <typeparam name="TItem">The type of data in the first column of each row.</typeparam>
+            <param name="commandText">The query to execute.</param>
+            <returns>
+            An array of all of the values of the first column of all of the rows in the resultset.
+            </returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteArray``1(System.String,SqlTools.ExecuteArrayOptions)">
+            <summary>
+            Executes the query and returns an array of all of the values of the first column of all rows in the resultset.
+            </summary>
+            <typeparam name="TItem">The type of data in the first column of each row.</typeparam>
+            <param name="commandText">The query to execute.</param>
+            <param name="options">The options that are applied to how arrays are created.</param>
+            <returns>
+            An array of all of the values of the first column of all of the rows in the resultset.
+            </returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteArray``1(System.Data.IDbCommand)">
+            <summary>
+            Executes the command and returns an array of all of the values of the first column of all rows in the resultset.
+            </summary>
+            <typeparam name="TItem">The type of data in the first column of each row.</typeparam>
+            <param name="command">The command to execute.</param>
+            <returns>
+            An array of all of the values of the first column of all of the rows in the resultset.
+            </returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteArray``1(System.Data.IDbCommand,SqlTools.ExecuteArrayOptions)">
+            <summary>
+            Executes the command and returns an array of all of the values of the first column of all rows in the resultset.
+            </summary>
+            <typeparam name="TItem">The type of data in the first column of each row.</typeparam>
+            <param name="command">The command to execute.</param>
+            <param name="options">The options that are applied to how arrays are created.</param>
+            <returns>
+            An array of all of the values of the first column of all of the rows in the resultset.
+            </returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteNonQuery(System.String)">
+            <summary>
+            Executes the query and returns the number of rows affected.
+            </summary>
+            <param name="commandText">The query to execute.</param>
+            <returns>The number of rows affected.</returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteNonQuery(System.Data.IDbCommand)">
+            <summary>
+            Executes the command and returns the number of rows affected.
+            </summary>
+            <param name="command">The command to execute.</param>
+            <returns>The number of rows affected.</returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteDataTable(System.String)">
+            <summary>
+            Executes the query and returns a DataTable filled with the results.
+            </summary>
+            <param name="commandText">The query to execute.</param>
+            <returns>DataTable containing the results of executing the query.</returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteDataTable(System.Data.IDbCommand)">
+            <summary>
+            Executes the command and returns a DataTable filled with the results.
+            </summary>
+            <param name="command">The command to execute.</param>
+            <returns>DataTable containing the results of executing the command.</returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteReader(System.String)">
+            <summary>
+            Executes a query and returns a SqlDataReader containing the resultset.
+            </summary>
+            <param name="commandText">The query to execute.</param>
+            <returns>A SqlDataReader containing the resultset.</returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteReader(System.Data.IDbCommand)">
+            <summary>
+            Executes a command and returns a SqlDataReader containing the resultset.
+            </summary>
+            <param name="command">The command to execute.</param>
+            <returns>A SqlDataReader containing the resultset.</returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ChangeType(System.Object,System.Type)">
+            <summary>
+            Returns an Object with the specified Type and whose value is equivalent to the specified object.
+            </summary>
+            <param name="value">The value.</param>
+            <param name="conversionType">Type of the conversion.</param>
+            <remarks>
+            This method was written by Peter Johnson at:
+            http://aspalliance.com/author.aspx?uId=1026.
+            </remarks>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteTuple``1(System.String)">
+            <summary>
+            Executes the sql and returns a resultset of tuple
+            </summary>
+            <typeparam name="TFirst">The type of the first.</typeparam>
+            <param name="commandText">The command text.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteTuple``1(System.Data.IDbCommand)">
+            <summary>
+            Executes command and returns a collection one dimensional tuple.
+            </summary>
+            <typeparam name="TFirst">The type of the first.</typeparam>
+            <param name="command">The command.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteTuple``2(System.String)">
+            <summary>
+            Executes the tuple.
+            </summary>
+            <typeparam name="TFirst">The type of the first.</typeparam>
+            <typeparam name="TSecond">The type of the second.</typeparam>
+            <param name="commandText">The command text.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteTuple``2(System.Data.IDbCommand)">
+            <summary>
+            Executes the tuple.
+            </summary>
+            <typeparam name="TFirst">The type of the first.</typeparam>
+            <typeparam name="TSecond">The type of the second.</typeparam>
+            <param name="command">The command.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteTuple``3(System.String)">
+            <summary>
+            Executes the tuple.
+            </summary>
+            <typeparam name="TFirst">The type of the first.</typeparam>
+            <typeparam name="TSecond">The type of the second.</typeparam>
+            <typeparam name="TThird">The type of the third.</typeparam>
+            <param name="commandText">The command text.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteTuple``3(System.Data.IDbCommand)">
+            <summary>
+            Executes the tuple.
+            </summary>
+            <typeparam name="TFirst">The type of the first.</typeparam>
+            <typeparam name="TSecond">The type of the second.</typeparam>
+            <typeparam name="TThird">The type of the third.</typeparam>
+            <param name="command">The command.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteSingle``1(System.String)">
+            <summary>
+            Executes the sql statement and attempts to map the first row of the resultset to the
+            specified type T.  If there are no results, the default for type T is returned.  The names used
+            in the query MUST match the property names of the type T in order for the mapping to work.
+            </summary>
+            <typeparam name="T">Represents the type that will be mapped to the first row of the resultset.</typeparam>
+            <param name="commandText">The sql command to execute.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteSingle``1(System.Data.IDbCommand)">
+            <summary>
+            Executes the sql command and attempts to map the first row of the resultset to the
+            specified type T.  If there are no results, the default for type T is returned.  The names used
+            in the query MUST match the property names of the type T in order for the mapping to work.
+            </summary>
+            <typeparam name="T">Represents the type that will be mapped to the first row of the resultset.</typeparam>
+            <param name="command">The command to execute.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteMultiple``1">
+            <summary>
+            Selects all rows from the table with the same name as the type T.
+            Attempts to map each row in the resultset to an instance of type T.
+            If no results are returned from the query, the method should return null.
+            The names used in the query MUST match the property names of the type T in order for the mapping to work.
+            </summary>
+            <typeparam name="T">Represents the type that will be be mapped to each row in the resultset.</typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteMultiple``1(System.String)">
+            <summary>
+            Executes the sql statement and attempts to map each row in the resultset to an instance of type T.  If no
+            results are returned from the query, the method should return null.  The names used
+            in the query MUST match the property names of the type T in order for the mapping to work.
+            </summary>
+            <typeparam name="T">Represents the type that will be be mapped to each row in the resultset.</typeparam>
+            <param name="commandText">The sql command execute.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ExecuteMultiple``1(System.Data.IDbCommand)">
+            <summary>
+            Executes the sql command and attempts to map each row in the resultset to an instance of type T.  If no
+            results are returned from the query, the method should return null.  The names used
+            in the query MUST match the property names of the type T in order for the mapping to work.
+            </summary>
+            <typeparam name="T">Represents the type that will be be mapped to each row in the resultset.</typeparam>
+            <param name="command">The command to execute.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.ChangeConnection(System.String)">
+            <summary>
+            Changes the connection.
+            </summary>
+            <param name="connectionString">The connection string.</param>
+        </member>
+        <member name="M:SqlTools.DbHelperBase.RaiseConnectionChanged(System.String,System.String)">
+            <summary>
+            Raises the connection changed event.
+            </summary>
+            <param name="oldConnectionString">The old connection string.</param>
+            <param name="newConnectionString">The new connection string.</param>
+        </member>
+        <member name="P:SqlTools.DbHelperBase.DefaultCommandTimeoutInSeconds">
+            <summary>
+            Gets or sets the default command timeout in seconds. 
+            The default value for this property is the same as the default for IDbCommand implementor's CommandTimeout property.
+            </summary>
+            <value>The default command timeout in seconds.</value>
+        </member>
+        <member name="P:SqlTools.DbHelperBase.ConnectionString">
+            <summary>
+            Gets the connection string to the database.
+            </summary>
+        </member>
+        <member name="E:SqlTools.DbHelperBase.ConnectionChanged">
+            <summary>
+            Occurs when [connection changed].
+            </summary>
+        </member>
+        <member name="T:SqlTools.DbUtility">
+            <summary>
+            Utility methods for working with DataTables, DataRows, et al.
+            </summary>
+        </member>
+        <member name="M:SqlTools.DbUtility.Parameterize(System.Data.IDbCommand,System.Collections.ICollection,System.String)">
+            <summary>
+            Creates a separate parameter for each value in the specified values and adds the parameter to the supplied command.
+            </summary>
+            <param name="command">The command the parameters are being appended.</param>
+            <param name="values">The values for the parameters.</param>
+            <param name="parameterName">Name of the parameter.</param>
+        </member>
+        <member name="M:SqlTools.DbUtility.Parameterize(System.Data.IDbCommand,System.Collections.ICollection,System.String,System.Int32)">
+            <summary>
+            Creates a separate parameter for each value in the specified values and adds the parameter to the supplied command.
+            </summary>
+            <param name="command">The command the parameters are being appended.</param>
+            <param name="values">The values for the parameters.</param>
+            <param name="parameterName">Name of the parameter.</param>
+            <param name="maxSizeOfData">The max size of data.</param>
+        </member>
+        <member name="M:SqlTools.DbUtility.Parameterize(System.Data.IDbCommand,System.Collections.ICollection,System.String,System.Data.SqlDbType,System.Int32)">
+            <summary>
+            Creates a separate parameter for each value in the specified values and adds the parameter to the supplied command.
+            </summary>
+            <param name="command">The command the parameters are being appended.</param>
+            <param name="values">The values for the parameters.</param>
+            <param name="parameterName">Name of the parameter.</param>
+            <param name="dbType">The Sql Server specific data type.</param>
+            <param name="maxSizeOfData">The max size of data.</param>
+        </member>
+        <member name="M:SqlTools.DbUtility.AddParameters(System.Data.IDbCommand,System.String,System.Collections.ICollection)">
+            <summary>
+            Creates a separate parameter for each value in the specified values and adds the parameter to the supplied command.
+            </summary>
+            <param name="this">The command the parameters are being appended.</param>
+            <param name="values">The values for the parameters.</param>
+            <param name="parameterName">Name of the parameter.</param>
+        </member>
+        <member name="M:SqlTools.DbUtility.AddParameters(System.Data.IDbCommand,System.String,System.Collections.ICollection,System.Int32)">
+            <summary>
+            Creates a separate parameter for each value in the specified values and adds the parameter to the supplied command.
+            </summary>
+            <param name="this">The command the parameters are being appended.</param>
+            <param name="values">The values for the parameters.</param>
+            <param name="parameterName">Name of the parameter.</param>
+            <param name="maxSizeOfData">The max size of data.</param>
+        </member>
+        <member name="M:SqlTools.DbUtility.AddParameters(System.Data.IDbCommand,System.String,System.Collections.ICollection,System.Data.SqlDbType,System.Int32)">
+            <summary>
+            Creates a separate parameter for each value in the specified values and adds the parameter to the supplied command.
+            </summary>
+            <param name="this">The command the parameters are being appended.</param>
+            <param name="values">The values for the parameters.</param>
+            <param name="parameterName">Name of the parameter.</param>
+            <param name="dbType">The Sql Server specific data type.</param>
+            <param name="maxSizeOfData">The max size of data.</param>
+        </member>
+        <member name="T:SqlTools.ExecuteArrayOptions">
+            <summary>
+            Options that are applied to how arrays are generated in ExecuteArray.
+            </summary>
+        </member>
+        <member name="F:SqlTools.ExecuteArrayOptions.None">
+            <summary>
+            Indicates that no options are set.
+            </summary>
+        </member>
+        <member name="F:SqlTools.ExecuteArrayOptions.IgnoreNullValues">
+            <summary>
+            Indicates that while building arrays, null values are ignored.  Ignoring null values means 
+            the array will contain fewer elements.
+            </summary>
+        </member>
+        <member name="T:SqlTools.InitialConnectionStates">
+            <summary>
+            The state of a connection.
+            </summary>
+        </member>
+        <member name="F:SqlTools.InitialConnectionStates.Open">
+            <summary>
+            The connection is open.
+            </summary>
+        </member>
+        <member name="F:SqlTools.InitialConnectionStates.Closed">
+            <summary>
+            The connection is closed.
+            </summary>
+        </member>
+        <member name="T:SqlTools.SqlDbHelper">
+            <summary>
+            Sql Server specific implementation of IDbHelper.
+            </summary>
+        </member>
+        <member name="M:SqlTools.SqlDbHelper.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SqlTools.SqlDbHelper"/> class.
+            </summary>
+            <param name="connectionString">The connection string.</param>
+        </member>
+        <member name="M:SqlTools.SqlDbHelper.#ctor(System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SqlTools.SqlDbHelper"/> class.
+            </summary>
+            <param name="connectionString">The connection string.</param>
+            <param name="defaultCommandTimeoutInSeconds">The default command timeout in seconds. The default for this value is whatever SqlCommand.CommandTimeout returns which is usually 30.</param>
+        </member>
+        <member name="M:SqlTools.SqlDbHelper.CreateCommand">
+            <summary>
+            Creates a provider specific implementation of IDbCommand.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.SqlDbHelper.CreateConnection">
+            <summary>
+            Creates a provider specific implementation of IDbConnection.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.SqlDbHelper.CreateDataAdapter(System.Data.IDbCommand)">
+            <summary>
+            Creates a provider specific implementation of IDbDataAdapter.
+            </summary>
+            <param name="command">The command used by the IDbDataAdapter.</param>
+            <returns></returns>
+        </member>
+        <member name="T:SqlTools.SystemDataExtensions">
+            <summary>
+            Some helper extensions to built in ADO.NET interface
+            </summary>
+        </member>
+        <member name="M:SqlTools.SystemDataExtensions.GetValue``1(System.Data.IDataReader,System.String)">
+            <summary>
+            Gets the strongly typed value for the columnName out of the current IDataReader.
+            </summary>
+            <typeparam name="T">The type of data contained in the specified column.</typeparam>
+            <param name="reader">The IDataReader instance.</param>
+            <param name="columnName">Name of the column to read.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.SystemDataExtensions.GetValue``1(System.Data.IDataReader,System.Int32)">
+            <summary>
+            Gets the strongly typed value for the column at the specified index out of the current IDataReader.
+            </summary>
+            <typeparam name="T">The type of data contained in the specified column.</typeparam>
+            <param name="reader">The IDataReader instance.</param>
+            <param name="index">The position of the column in the IDataReader to read.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SqlTools.SystemDataExtensions.GetValue``1(System.Data.DataRow,System.String)">
+            <summary>
+            Gets the strongly typed value of the specified columnName in the DataRow.
+            </summary>
+            <typeparam name="T">The type of data contained in the specified column.</typeparam>
+            <param name="row">The DataRow to read.</param>
+            <param name="columnName">Name of the column to read.</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
