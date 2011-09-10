@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace RazorProber.Views.Home
 {
-	public class GenCrudViewModel : ViewModel
+	public class ColumnsViewModel : ViewModel
 	{
 		public virtual void Initialize()
 		{
@@ -72,32 +72,5 @@ namespace RazorProber.Views.Home
 				base.NotifyChanged("SelectedTable");
 			}
 		}
-		public ICommand GenerateRepositoryCommand
-		{
-			get
-			{
-				return new RelayCommand(
-					() => 
-					{
-						var templatePath = Path.Combine(Environment.CurrentDirectory.Replace(@"bin\Debug", ""), "RepositoryTemplate.cshtml");
-						var template = File.ReadAllText(templatePath);
-						Code = Razor.Parse(template, new { ClassName = SelectedTable.Name.Replace(" ",""), Table = SelectedTable });						
-					});
-			}
-		}
-		private string _code;
-		public string Code
-		{
-			get
-			{
-				return _code;
-			}
-			set
-			{
-				_code = value;
-				base.NotifyChanged("Code");
-			}
-		}
-
 	}
 }

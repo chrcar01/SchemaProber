@@ -16,5 +16,9 @@ namespace RazorProber.Controllers
 		{
 			return Page(new GenCrudViewModel());
 		}
+		public ActionResult Columns()
+		{
+			return Page(new ColumnsViewModel());
+		}
 	}
 }
