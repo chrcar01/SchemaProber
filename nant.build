@@ -1,0 +1,82 @@
+<project name="SchemaProber" default="build">
+
+	<property name="build.dir" value="./build" />
+	<property name="lib.dir" value="./lib" />
+	<property name="version" value="1.0.0.0" />
+	
+	<target name="build" depends="init">
+		<call target="compile" />
+		<call target="copy-lib" />
+		<call target="package" />
+		<call target="clean-up" />
+	</target>
+	
+	<target name="init" depends="clean-up">
+		<mkdir dir="${build.dir}" />
+	</target>
+	
+	<target name="clean-up">
+		<delete dir="${build.dir}" if="${directory::exists(build.dir)}" />
+	</target>
+	
+	<target name="compile" depends="generate-assembly-info">
+		<csc
+			output="${build.dir}/${project::get-name()}.dll"
+			target="library"
+			warnaserror="true"
+			doc="${build.dir}/${project::get-name()}.xml"
+			warninglevel="4">
+			<references>
+				<include name="${lib.dir}/SqlTools.dll" />
+			</references>
+			<sources>
+				<include name="${build.dir}/AssemblyInfo.cs" />
+				<include name="./src/**/*.cs" />
+			</sources>
+		</csc>
+	</target>
+	
+	<target name="generate-assembly-info"> 
+		<asminfo output="${build.dir}/AssemblyInfo.cs" language="CSharp">
+			<imports>
+				<import namespace="System" />
+				<import namespace="System.Reflection" />
+				<import namespace="System.EnterpriseServices" />
+				<import namespace="System.Runtime.InteropServices" />				
+			</imports>
+			<attributes>
+				<attribute type="ComVisibleAttribute" value="false" />
+				<attribute type="CLSCompliantAttribute" value="false" />
+				<attribute type="AssemblyVersionAttribute" value="${version}" />
+				<attribute type="AssemblyFileVersionAttribute" value="${version}" />
+				<attribute type="AssemblyTitleAttribute" value="SchemaProber" />
+				<attribute type="AssemblyDescriptionAttribute" value="SchemaProber" />
+				<attribute type="AssemblyCopyrightAttribute" value="Copyright (c) 2011, Chris Carter" />
+				<attribute type="AssemblyCompanyAttribute" value="Chris Carter" />
+				<attribute type="ApplicationNameAttribute" value="SchemaProber" />
+			</attributes>
+			<references>
+				<include name="System.EnterpriseServices.dll" />
+			</references>
+		</asminfo>
+	</target>
+	
+	<target name="copy-lib">
+		<copy todir="${build.dir}">
+			<fileset basedir="${lib.dir}">
+				<include name="SqlTools.*" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="package">
+		<property name="zipfile" value="./SchemaProber-${version}.zip" />
+		<delete file="${zipfile}" if="${file::exists(zipfile)}" />
+		<zip zipfile="./SchemaProber-${version}.zip">
+			<fileset basedir="${build.dir}">
+				<include name="*.*" />
+				<exclude name="*.cs" />
+			</fileset>
+		</zip>
+	</target>
+</project>
