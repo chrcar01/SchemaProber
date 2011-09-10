@@ -1,0 +1,32 @@
+namespace NVelocitySchemaProber
+{
+	using System;
+	using System.ComponentModel;
+	
+	public class $className : INotifyPropertyChanged
+	{
+#foreach ($column in $columns)
+		private $column.DataType _$column.Name;
+		public virtual $column.DataType $column.Name
+		{
+			get
+			{
+				return _$column.Name;
+			}
+			set
+			{
+				_$column.Name = value;
+				RaisePropertyChanged("$column.Name");
+			}
+		}
+#end
+		#region INotifyPropertyChanged
+		public event PropertyChangedEventHandler PropertyChanged;
+		protected virtual void RaisePropertyChanged(string propertyName)
+		{
+			if (PropertyChanged == null) return;
+			PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+		#endregion
+	}
+}

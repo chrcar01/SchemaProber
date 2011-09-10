@@ -1,0 +1,529 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SchemaProber</name>
+    </assembly>
+    <members>
+        <member name="T:SchemaProber.ColumnSchema">
+            <summary>
+            Represents a field in a table.
+            </summary>
+        </member>
+        <member name="T:SchemaProber.IColumnSchema">
+            <summary>
+            Implement this interface to represent a column in a database.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.IColumnSchema.Length">
+            <summary>
+            Gets the length of the column
+            </summary>
+        </member>
+        <member name="P:SchemaProber.IColumnSchema.Nullable">
+            <summary>
+            Gets a value indicating whether a column can contain nulls.  It's looking for the 'is_nullable'
+            key in the props.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.IColumnSchema.IsPrimaryKey">
+            <summary>
+            Gets a value indicating whether this column is a primary key.  It depends on a boolean value
+            in the props with the key 'is_primary_key'.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.IColumnSchema.IsForeignKey">
+            <summary>
+            Gets a value indicating whether this column is a foreign key.  It depends on a boolean value
+            in the props with the key 'is_foreign_key'.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.IColumnSchema.DataType">
+            <summary>
+            Gets the .NET datatype for this column.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.IColumnSchema.Name">
+            <summary>
+            gets the name of the column.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.IColumnSchema.Table">
+            <summary>
+            Gets the TableSchema containing this column.
+            </summary>
+        </member>
+        <member name="F:SchemaProber.ColumnSchema._dbprovider">
+            <summary>
+            Instance of the IDbProvider used to get information from the database.
+            </summary>
+        </member>
+        <member name="F:SchemaProber.ColumnSchema._props">
+            <summary>
+            A Dictionary&lt;string,object&gt;
+            containing extra properties for this column.
+            </summary>
+        </member>
+        <member name="M:SchemaProber.ColumnSchema.#ctor">
+            <summary>
+            Initializes a new instance of the ColumnSchema class.
+            </summary>
+        </member>
+        <member name="M:SchemaProber.ColumnSchema.#ctor(SchemaProber.IDbProvider,SchemaProber.TableSchema,System.Data.SqlDbType,System.Type,System.String,System.Int32,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Initializes a new instance of the ColumnSchema
+            </summary>
+            <param name="dbprovider">The DbProvider used for interrogating the datastore.</param>
+            <param name="table">The TableSchema that contains the column.</param>
+            <param name="sqlType">SqlDbType.</param>
+            <param name="dataType">.NET DataType</param>
+            <param name="name">Name of the column.</param>
+            <param name="props">Any extended properties.</param>
+            <param name="length">Length of the column if supported.</param>
+        </member>
+        <member name="P:SchemaProber.ColumnSchema.Length">
+            <summary>
+            Gets the length of the column
+            </summary>
+        </member>
+        <member name="P:SchemaProber.ColumnSchema.Nullable">
+            <summary>
+            Gets a value indicating whether a column can contain nulls.  It's looking for the 'is_nullable'
+            key in the props.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.ColumnSchema.IsIdentity">
+            <summary>
+            Gets a value indicating whether this column is an ident column.  It depends on a boolean value
+            in the props with the key 'is_identity'.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.ColumnSchema.IsPrimaryKey">
+            <summary>
+            Gets a value indicating whether this column is a primary key.  It depends on a boolean value
+            in the props with the key 'is_primary_key'.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.ColumnSchema.IsForeignKey">
+            <summary>
+            Gets a value indicating whether this column is a foreign key.  It depends on a boolean value
+            in the props with the key 'is_foreign_key'.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.ColumnSchema.SqlType">
+            <summary>
+            Gets the sql datatype for this column.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.ColumnSchema.DataType">
+            <summary>
+            Gets the .NET datatype for this column.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.ColumnSchema.Name">
+            <summary>
+            gets the name of the column.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.ColumnSchema.Table">
+            <summary>
+            Gets the TableSchema containing this column.
+            </summary>
+        </member>
+        <member name="T:SchemaProber.ColumnSchemaList">
+            <summary>
+            List of ColumnSchemas.
+            </summary>
+        </member>
+        <member name="M:SchemaProber.ColumnSchemaList.#ctor">
+            <summary>
+            Initializes a new instance of the ColumnSchemaList
+            </summary>
+        </member>
+        <member name="M:SchemaProber.ColumnSchemaList.#ctor(System.Collections.Generic.IEnumerable{SchemaProber.IColumnSchema})">
+            <summary>
+            Initializes a new instance of the ColumnSchemaList
+            </summary>
+            <param name="collection"></param>
+        </member>
+        <member name="P:SchemaProber.ColumnSchemaList.Item(System.String)">
+            <summary>
+            Gets a ColumnSchema by name from the list of ColumnSchemas.
+            </summary>
+            <param name="columnName"></param>
+            <returns></returns>
+        </member>
+        <member name="T:SchemaProber.DatabaseSchema">
+            <summary>
+            Represents a view of a database.
+            </summary>
+        </member>
+        <member name="M:SchemaProber.DatabaseSchema.#ctor(SchemaProber.IDbProvider)">
+            <summary>
+            Initializes a new instance of a DatabaseSchema.
+            </summary>
+            <param name="dbprovider"></param>
+        </member>
+        <member name="M:SchemaProber.DatabaseSchema.GetTables(System.String)">
+            <summary>
+            Retrieves all of the tables whose names begin with the specified prefix.
+            </summary>
+            <param name="prefix">Prefix of the tables to find.</param>
+            <returns>List of tables whose names begin with the specified prefix.</returns>
+        </member>
+        <member name="P:SchemaProber.DatabaseSchema.Tables">
+            <summary>
+            Gets the list of tables in the database.
+            </summary>
+        </member>
+        <member name="T:SchemaProber.Enum`1">
+            <summary>
+            Utility class used for grabbing an enum value from a string
+            </summary>
+            <typeparam name="T">The type of enum.</typeparam>
+        </member>
+        <member name="M:SchemaProber.Enum`1.Parse(System.String)">
+            <summary>
+            Extracts an enum value based on a string value.
+            </summary>
+            <param name="value">Value to parse.</param>
+            <returns></returns>
+        </member>
+        <member name="T:SchemaProber.ForeignKeyColumnSchema">
+            <summary>
+            Represents a foreign key column.
+            </summary>
+        </member>
+        <member name="T:SchemaProber.IForeignKeyColumnSchema">
+            <summary>
+            Implement this interface to represent a foreign key. 
+            </summary>
+        </member>
+        <member name="P:SchemaProber.IForeignKeyColumnSchema.PrimaryKeyTable">
+            <summary>
+            Gets the primary key table that this foreign key originates.
+            </summary>
+            <value>The primary key table this foreign key originates.</value>
+        </member>
+        <member name="M:SchemaProber.ForeignKeyColumnSchema.#ctor(SchemaProber.IDbProvider,SchemaProber.TableSchema,System.Data.SqlDbType,System.Type,System.String,System.Int32,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Initializes a new instance of the ForeignKeyColumnSchema class.
+            </summary>
+            <param name="dbprovider">The DbProvider used for interrogating the datastore.</param>
+            <param name="table">The TableSchema that contains the column.</param>
+            <param name="sqlType">SqlDbType.</param>
+            <param name="dataType">.NET DataType</param>
+            <param name="name">Name of the column.</param>
+            <param name="props">Any extended properties.</param>
+            <param name="length">Length of the column if supported.</param>
+        </member>
+        <member name="P:SchemaProber.ForeignKeyColumnSchema.PrimaryKeyTable">
+            <summary>
+            Gets a reference to the PrimaryKeyTable for this foreign key.
+            </summary>
+        </member>
+        <member name="T:SchemaProber.ForeignKeyColumnSchemaList">
+            <summary>
+            List of ForeignKeys.
+            </summary>
+        </member>
+        <member name="T:SchemaProber.IDbProvider">
+            <summary>
+            Common interface for extracting information from a database.
+            </summary>
+        </member>
+        <member name="M:SchemaProber.IDbProvider.GetTableSchemas">
+            <summary>
+            Gets a list of tables in a database.
+            </summary>
+            <returns>A list of tables from a database.</returns>
+        </member>
+        <member name="M:SchemaProber.IDbProvider.GetAssociations(SchemaProber.TableSchema)">
+            <summary>
+            Gets the associations.
+            </summary>
+            <param name="table">The table.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SchemaProber.IDbProvider.GetTableSchema(System.String)">
+            <summary>
+            Gets a TableSchema instance from the database by name.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <returns>An instance of a TableSchema representing the database table.</returns>
+        </member>
+        <member name="M:SchemaProber.IDbProvider.GetColumnSchemas(SchemaProber.TableSchema)">
+            <summary>
+            Gets a list of columns for a table.
+            </summary>
+            <param name="table">The TableSchema instance to retrieve columns.</param>
+            <returns>A list of columns in the TableSchema instance.</returns>
+        </member>
+        <member name="M:SchemaProber.IDbProvider.GetForeignKeys(SchemaProber.TableSchema)">
+            <summary>
+            Gets a list of foreign keys contained in a table.
+            </summary>
+            <param name="table">A TableSchema instance representing a database table.</param>
+            <returns>A list of foreign key columns contained within a database table.</returns>
+        </member>
+        <member name="M:SchemaProber.IDbProvider.GetForeignKeyReferences(SchemaProber.PrimaryKeyColumnSchema)">
+            <summary>
+            Gets the tables that reference a primary key.
+            </summary>
+            <param name="primaryKey">A primary key.</param>
+            <returns>A list of foreign key columns that reference the primary key.</returns>
+        </member>
+        <member name="M:SchemaProber.IDbProvider.GetPrimaryKey(SchemaProber.TableSchema)">
+            <summary>
+            Gets the primary key for a table.
+            </summary>
+            <param name="table">A TableSchema instance that represents a database table.</param>
+            <returns>The primary key column of a table.</returns>
+        </member>
+        <member name="M:SchemaProber.IDbProvider.GetTableSchemas(System.String)">
+            <summary>
+            Gets a list of tables whose names begin with the specified prefix.
+            </summary>
+            <param name="prefix">The prefix of the tables to find.</param>
+            <returns>List of tables whose names begin with the specified prefix.</returns>
+        </member>
+        <member name="M:SchemaProber.IDbProvider.GetTableEnumData(System.String,System.String,System.String)">
+            <summary>
+            Gets the table enum data.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="nameField">The field in the table to use for the field names in an enum.</param>
+            <param name="valueField">The field in the table to use for the field value in an enum.</param>
+            <returns></returns>
+        </member>
+        <member name="P:SchemaProber.IDbProvider.ConnectionString">
+            <summary>
+            Gets the connectionstring the implementing instance is using.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.IDbProvider.ID">
+            <summary>
+            Gets or sets the ID of an instance of a class implementing IDbProvider.
+            </summary>
+        </member>
+        <member name="T:SchemaProber.PrimaryKeyColumnSchema">
+            <summary>
+            Represents the primary key column of a table.
+            </summary>
+        </member>
+        <member name="M:SchemaProber.PrimaryKeyColumnSchema.#ctor(SchemaProber.IDbProvider,SchemaProber.TableSchema,System.Data.SqlDbType,System.Type,System.String,System.Int32,System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Initializes a new instance of a PrimaryKeyColumnSchema.
+            </summary>
+            <param name="dbprovider">The DbProvider used for interrogating the datastore.</param>
+            <param name="table">The TableSchema that contains the column.</param>
+            <param name="sqlType">SqlDbType.</param>
+            <param name="dataType">.NET DataType</param>
+            <param name="name">Name of the column.</param>
+            <param name="props">Any extended properties.</param>
+            <param name="length">Length of the column if supported.</param>
+        </member>
+        <member name="M:SchemaProber.PrimaryKeyColumnSchema.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SchemaProber.PrimaryKeyColumnSchema"/> class.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.PrimaryKeyColumnSchema.ForeignKeyReferences">
+            <summary>
+            Represents a list of tables where this primary key is referenced as a foreign key.
+            </summary>
+        </member>
+        <member name="T:SchemaProber.SchemaProberException">
+            <summary>
+            Represents an exception that occurs in the SchemaProber
+            </summary>
+        </member>
+        <member name="M:SchemaProber.SchemaProberException.#ctor">
+            <summary>
+            Constructs a new SchemaProberException.
+            </summary>
+        </member>
+        <member name="M:SchemaProber.SchemaProberException.#ctor(System.String)">
+            <summary>
+            Constructs a new SchemaProberException.
+            </summary>
+            <param name="message">The exception message</param>
+        </member>
+        <member name="M:SchemaProber.SchemaProberException.#ctor(System.String,System.Exception)">
+            <summary>
+            Constructs a new SchemaProberException.
+            </summary>
+            <param name="message">The exception message</param>
+            <param name="innerException">The inner exception</param>
+        </member>
+        <member name="M:SchemaProber.SchemaProberException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Serialization constructor.
+            </summary>
+        </member>
+        <member name="T:SchemaProber.SqlServerProvider">
+            <summary>
+            SqlServer implementation of the IDbProvider interface.
+            </summary>
+        </member>
+        <member name="M:SchemaProber.SqlServerProvider.#ctor(SqlTools.IDbHelper)">
+            <summary>
+            Initializes a new instance of the SqlServerProvider
+            </summary>
+            <param name="helper"></param>
+        </member>
+        <member name="M:SchemaProber.SqlServerProvider.GetColumnSchemas(SchemaProber.TableSchema)">
+            <summary>
+            Gets all of the columns for a table.
+            </summary>
+            <param name="table"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SchemaProber.SqlServerProvider.GetTableSchema(System.String)">
+            <summary>
+            Returns a new instance of a tableschema.
+            </summary>
+            <param name="tableName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SchemaProber.SqlServerProvider.GetTableSchemas">
+            <summary>
+            Gets all of the tables in a database.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SchemaProber.SqlServerProvider.GetTableSchemas(System.String)">
+            <summary>
+            Gets a list of tables whose names begin with the specified prefix.
+            </summary>
+            <param name="prefix">The prefix of the tables to find.</param>
+            <returns>List of tables whose names begin with the specified prefix.</returns>
+        </member>
+        <member name="M:SchemaProber.SqlServerProvider.GetPrimaryKey(SchemaProber.TableSchema)">
+            <summary>
+            Gets the primary key for a table.
+            </summary>
+            <param name="table"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SchemaProber.SqlServerProvider.GetForeignKeyReferences(SchemaProber.PrimaryKeyColumnSchema)">
+            <summary>
+            Gets all of the objects representing tables that have references to a primary key.
+            </summary>
+            <param name="primaryKey"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SchemaProber.SqlServerProvider.GetForeignKeys(SchemaProber.TableSchema)">
+            <summary>
+            Gets all of the foreign keys within a table.
+            </summary>
+            <param name="table"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SchemaProber.SqlServerProvider.GetTableEnumData(System.String,System.String,System.String)">
+            <summary>
+            Gets the table enum data.
+            </summary>
+            <param name="tableName">Name of the table.</param>
+            <param name="nameField">The field in the table to use for the field names in an enum.</param>
+            <param name="valueField">The field in the table to use for the field value in an enum.</param>
+            <returns></returns>
+        </member>
+        <member name="M:SchemaProber.SqlServerProvider.GetAssociations(SchemaProber.TableSchema)">
+            <summary>
+            Gets the associations.
+            </summary>
+            <param name="table">The table.</param>
+            <returns></returns>
+        </member>
+        <member name="P:SchemaProber.SqlServerProvider.ID">
+            <summary>
+            Gets or sets the ID of this instance of the SqlServerProvider class.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.SqlServerProvider.ConnectionString">
+            <summary>
+            Gets the connectionstring the implementing instance is using.
+            </summary>
+            <value></value>
+        </member>
+        <member name="T:SchemaProber.TableSchema">
+            <summary>
+            Represents a database table.
+            </summary>
+        </member>
+        <member name="M:SchemaProber.TableSchema.#ctor">
+            <summary>
+            Initializes a new instance of the TableSchema class.
+            </summary>
+        </member>
+        <member name="M:SchemaProber.TableSchema.#ctor(SchemaProber.IDbProvider,System.String)">
+            <summary>
+            Initializes a new instance of the TableSchema class.
+            </summary>
+            <param name="name">Name of the table.</param>
+            <param name="dbprovider">Instance of the dbprovider used to obtain information about the table.</param>
+        </member>
+        <member name="M:SchemaProber.TableSchema.HasColumn(System.String)">
+            <summary>
+            Determines whether the specified column is in the table.
+            </summary>
+            <param name="columnName">Name of the column.</param>
+            <returns>
+            	<c>true</c> if the specified column name is found in this table; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:SchemaProber.TableSchema.Provider">
+            <summary>
+            Gets the IDbProvider instance.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.TableSchema.Name">
+            <summary>
+            Gets the name of the table.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.TableSchema.Columns">
+            <summary>
+            Gets all of the columns for the table.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.TableSchema.PrimaryKey">
+            <summary>
+            Gets the primary key for the table.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.TableSchema.ForeignKeys">
+            <summary>
+            Gets all of the foreign keys contained in this table.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.TableSchema.NonKeyColumns">
+            <summary>
+            Gets all colunms that are not foreign keys and not primary keys.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.TableSchema.NonPrimaryKeyColumns">
+            <summary>
+            Gets all columns except for the primary key.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.TableSchema.Associations">
+            <summary>
+            Gets the associations.
+            </summary>
+            <value>The associations.</value>
+        </member>
+        <member name="T:SchemaProber.TableSchemaList">
+            <summary>
+            List of TableSchemas.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.TableSchemaList.Item(System.String)">
+            <summary>
+            Gets a TableSchema from the list of tables in this instance by name.
+            </summary>
+            <param name="tableName">Name of the table to find.</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
