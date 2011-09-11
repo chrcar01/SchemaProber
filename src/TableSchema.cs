@@ -65,17 +65,17 @@ namespace SchemaProber
 				return _columns;
 			}
 		}
-		private PrimaryKeyColumnSchema _pk;
+		private PrimaryKeyColumnSchemaList _primaryKeys;
 		/// <summary>
 		/// Gets the primary key for the table.
 		/// </summary>
-		public virtual PrimaryKeyColumnSchema PrimaryKey
+		public virtual PrimaryKeyColumnSchemaList PrimaryKeys
 		{
 			get
 			{
-				if (_pk == null)
-					_pk = this.Provider.GetPrimaryKey(this);
-				return _pk;
+				if (_primaryKeys == null)
+					_primaryKeys = Provider.GetPrimaryKeys(this.Name);
+				return _primaryKeys;
 			}
 		}
 		private ForeignKeyColumnSchemaList _fkcolumns = null;
@@ -87,7 +87,7 @@ namespace SchemaProber
 			get
 			{
 				if (_fkcolumns == null)
-					_fkcolumns = this.Provider.GetForeignKeys(this);
+					_fkcolumns = this.Provider.GetForeignKeys(Name);
 				return _fkcolumns;
 			}
 		}

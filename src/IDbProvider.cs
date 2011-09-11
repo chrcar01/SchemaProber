@@ -45,9 +45,11 @@ namespace SchemaProber
 		/// <summary>
 		/// Gets a list of foreign keys contained in a table.
 		/// </summary>
-		/// <param name="table">A TableSchema instance representing a database table.</param>
-		/// <returns>A list of foreign key columns contained within a database table.</returns>
-		ForeignKeyColumnSchemaList GetForeignKeys(TableSchema table);
+		/// <param name="tableName">Name of the table.</param>
+		/// <returns>
+		/// A list of foreign key columns contained within a database table.
+		/// </returns>
+		ForeignKeyColumnSchemaList GetForeignKeys(string tableName);
 		/// <summary>
 		/// Gets the tables that reference a primary key.
 		/// </summary>
@@ -57,9 +59,11 @@ namespace SchemaProber
 		/// <summary>
 		/// Gets the primary key for a table.
 		/// </summary>
-		/// <param name="table">A TableSchema instance that represents a database table.</param>
-		/// <returns>The primary key column of a table.</returns>
-		PrimaryKeyColumnSchema GetPrimaryKey(TableSchema table);
+		/// <param name="tableName">Name of the table.</param>
+		/// <returns>
+		/// The primary key column of a table.
+		/// </returns>
+		PrimaryKeyColumnSchemaList GetPrimaryKeys(string tableName);
 		/// <summary>
 		/// Gets a list of tables whose names begin with the specified prefix.
 		/// </summary>

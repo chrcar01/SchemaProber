@@ -85,8 +85,8 @@ where c.table_name = @table_name
 						while (reader.Read())
 						{
 							if (result == null) result = new ColumnSchemaList();
-							SqlDbType sqlType = getSqlDbType(reader["DATA_TYPE"].ToString());
-							Type dataType = getDataType(reader["DATA_TYPE"].ToString());
+							SqlDbType sqlType = GetSqlDbType(reader["DATA_TYPE"].ToString());
+							Type dataType = GetDataType(reader["DATA_TYPE"].ToString());
 							string name = reader["COLUMN_NAME"].ToString();
 							int length = reader["CHARACTER_MAXIMUM_LENGTH"] != DBNull.Value ? System.Convert.ToInt32(reader["CHARACTER_MAXIMUM_LENGTH"]) : -1;
 							if (length < 0 && dataType == typeof(string))
@@ -112,7 +112,7 @@ where c.table_name = @table_name
 			return result;
 		}
 
-		private SqlDbType getSqlDbType(string value)
+		private SqlDbType GetSqlDbType(string value)
 		{
 			SqlDbType result;
 			if (value.Equals("numeric", StringComparison.OrdinalIgnoreCase))
@@ -121,7 +121,7 @@ where c.table_name = @table_name
 				result = Enum<SqlDbType>.Parse(value);
 			return result;
 		}
-		private Type getDataType(string sqlType)
+		private Type GetDataType(string sqlType)
 		{
 			switch (sqlType.ToLower())
 			{
@@ -173,7 +173,7 @@ where c.table_name = @table_name
 		public virtual TableSchemaList GetTableSchemas()
 		{			
 			TableSchemaList result = null;
-			string cmdtext = @"select * from information_schema.tables where table_name not like 'sys%'";
+			string cmdtext = @"select * from information_schema.tables where table_name not like 'sys%' and table_type='BASE TABLE'";
 			using (IDataReader reader = this._helper.ExecuteReader(cmdtext))
 			{
 				while (reader.Read())
@@ -208,45 +208,48 @@ where c.table_name = @table_name
 		/// <summary>
 		/// Gets the primary key for a table.
 		/// </summary>
-		/// <param name="table"></param>
-		/// <returns></returns>
-		public virtual PrimaryKeyColumnSchema GetPrimaryKey(TableSchema table)
+		/// <param name="tableName">Name of the table.</param>
+		/// <returns>
+		/// The primary key column of a table.
+		/// </returns>
+		public virtual PrimaryKeyColumnSchemaList GetPrimaryKeys(string tableName)
 		{
-			PrimaryKeyColumnSchema result = null;
-			if (table == null)
+			var result = new PrimaryKeyColumnSchemaList();
+			if (String.IsNullOrEmpty(tableName))
 				return result;
 
-			string cmdtext = @"
+			var sql = @"
 select 
-	columnproperty(object_id(c.table_name), c.column_name, 'IsIdentity') as is_identity,
-	c.*
+    columnproperty(object_id(c.table_name), c.column_name, 'IsIdentity') as is_identity,
+    c.*
 from information_schema.table_constraints tc
 inner join information_schema.key_column_usage kcu
-	on kcu.constraint_name = tc.constraint_name
-	and kcu.table_name = tc.table_name
+    on kcu.constraint_name = tc.constraint_name
+    and kcu.table_name = tc.table_name
 inner join information_schema.columns c
-	on c.table_name = kcu.table_name
-	and c.column_name = kcu.column_name
+    on c.table_name = kcu.table_name
+    and c.column_name = kcu.column_name
 where tc.constraint_type = 'PRIMARY KEY'
 and c.table_name = @table_name
 ";
-			using (SqlCommand cmd = new SqlCommand(cmdtext))
+			var table = GetTableSchema(tableName);
+			using (var cmd = new SqlCommand(sql))
 			{
-				cmd.Parameters.Add("@table_name", SqlDbType.NVarChar, 128).Value = table.Name;
-				using (IDataReader reader = this._helper.ExecuteReader(cmd))
+				cmd.Parameters.Add("@table_name", SqlDbType.NVarChar, 128).Value = tableName;
+				using (var reader = _helper.ExecuteReader(cmd))
 				{
-					if (reader.Read())
+					while (reader.Read())
 					{
-						SqlDbType sqlType = Enum<SqlDbType>.Parse(reader["DATA_TYPE"].ToString());
-						Type dataType = getDataType(reader["DATA_TYPE"].ToString());
-						string name = reader["COLUMN_NAME"].ToString();
-						Dictionary<string, object> props = new Dictionary<string, object>();
+						var sqlType = Enum<SqlDbType>.Parse(reader["DATA_TYPE"].ToString());
+						var dataType = GetDataType(reader["DATA_TYPE"].ToString());
+						var name = reader["COLUMN_NAME"].ToString();
+						var props = new Dictionary<string, object>();
 						props.Add("is_identity", Convert.ToBoolean(reader["is_identity"]));
-						int length = reader["CHARACTER_MAXIMUM_LENGTH"] != DBNull.Value ? System.Convert.ToInt32(reader["CHARACTER_MAXIMUM_LENGTH"]) : -1;
+						var length = reader["CHARACTER_MAXIMUM_LENGTH"] != DBNull.Value ? System.Convert.ToInt32(reader["CHARACTER_MAXIMUM_LENGTH"]) : -1;
 						props.Add("is_primary_key", true);
 						props.Add("is_foreign_key", false);
 						props.Add("is_nullable", (reader["is_nullable"].ToString().Equals("YES")));
-						result = new PrimaryKeyColumnSchema(this, table, sqlType, dataType, name, length, props);
+						result.Add(new PrimaryKeyColumnSchema(this, table, sqlType, dataType, name, length, props));
 					}
 				}
 				
@@ -290,7 +293,7 @@ where object_name (f.referenced_object_id) =  @table_name
 					{
 						string tableName = reader["TABLE_NAME"].ToString();
 						SqlDbType sqlType = Enum<SqlDbType>.Parse(reader["DATA_TYPE"].ToString());
-						Type dataType = getDataType(reader["DATA_TYPE"].ToString());
+						Type dataType = GetDataType(reader["DATA_TYPE"].ToString());
 						string name = reader["COLUMN_NAME"].ToString();
 						Dictionary<string, object> props = new Dictionary<string, object>();
 						props.Add("is_identity", false);
@@ -312,40 +315,42 @@ where object_name (f.referenced_object_id) =  @table_name
 		/// <summary>
 		/// Gets all of the foreign keys within a table.
 		/// </summary>
-		/// <param name="table"></param>
-		/// <returns></returns>
-		public virtual ForeignKeyColumnSchemaList GetForeignKeys(TableSchema table)
+		/// <param name="tableName">Name of the table.</param>
+		/// <returns>
+		/// A list of foreign key columns contained within a database table.
+		/// </returns>
+		public virtual ForeignKeyColumnSchemaList GetForeignKeys(string tableName)
 		{
-			ForeignKeyColumnSchemaList result = new ForeignKeyColumnSchemaList();
-
-			string cmdtext = @"
+			var result = new ForeignKeyColumnSchemaList();
+			var sql = @"
 select distinct
-	col_name(fc.parent_object_id, fc.parent_column_id) as column_name,
-	c.data_type,
-	object_name (f.referenced_object_id) as primary_key_table,
-	c.*
+    col_name(fc.parent_object_id, fc.parent_column_id) as column_name,
+    c.data_type,
+    object_name (f.referenced_object_id) as primary_key_table,
+    c.*
 from sys.foreign_keys as f
 inner join sys.foreign_key_columns as fc
-	on f.object_id = fc.constraint_object_id
+    on f.object_id = fc.constraint_object_id
 inner join information_schema.columns c
-	on c.column_name = col_name(fc.parent_object_id, fc.parent_column_id)
-	and c.table_name = object_name(f.parent_object_id)
+    on c.column_name = col_name(fc.parent_object_id, fc.parent_column_id)
+    and c.table_name = object_name(f.parent_object_id)
 where object_name(f.parent_object_id) = @table_name
 ";
-			using (SqlCommand cmd = new SqlCommand(cmdtext))
+			var table = GetTableSchema(tableName);
+			using (SqlCommand cmd = new SqlCommand(sql))
 			{
-				cmd.Parameters.Add("@table_name", SqlDbType.NVarChar, 128).Value = table.Name;
+				cmd.Parameters.Add("@table_name", SqlDbType.NVarChar, 128).Value = tableName;
 				using (IDataReader reader = this._helper.ExecuteReader(cmd))
 				{
 					while (reader.Read())
 					{
-						string columnName = reader["column_name"].ToString();
-						SqlDbType sqldatatype = Enum<SqlDbType>.Parse(reader["data_type"].ToString());
-						Type datatype = getDataType(reader["data_type"].ToString());
-						Dictionary<string, object> props = new Dictionary<string, object>();
+						var columnName = reader["column_name"].ToString();
+						var sqldatatype = Enum<SqlDbType>.Parse(reader["data_type"].ToString());
+						var datatype = GetDataType(reader["data_type"].ToString());
+						var props = new Dictionary<string, object>();
 						props.Add("primary_key_table", reader["primary_key_table"].ToString());
-						int length = reader["CHARACTER_MAXIMUM_LENGTH"] != DBNull.Value ? System.Convert.ToInt32(reader["CHARACTER_MAXIMUM_LENGTH"]) : -1;
-						ForeignKeyColumnSchema column = new ForeignKeyColumnSchema(this, table, sqldatatype, datatype, columnName, length, props);
+						var length = reader["CHARACTER_MAXIMUM_LENGTH"] != DBNull.Value ? System.Convert.ToInt32(reader["CHARACTER_MAXIMUM_LENGTH"]) : -1;
+						var column = new ForeignKeyColumnSchema(this, table, sqldatatype, datatype, columnName, length, props);
 						result.Add(column);
 					}
 				}
@@ -397,7 +402,7 @@ where object_name(f.parent_object_id) = @table_name
 			
 			//find all tables that have 2 foreign keys, only 2 columns, and NO primary key
 			var assocTables = from t in this.GetTableSchemas()
-							  where t.PrimaryKey == null
+							  where t.PrimaryKeys == null
 							  && t.Columns.Count == 2
 							  && t.ForeignKeys.Count == 2
 							  select t;

@@ -4,10 +4,10 @@ using System.Text;
 using System.Data;
 namespace SchemaProber
 {
-	/// <summary>
+    /// <summary>
 	/// Represents the primary key column of a table.
 	/// </summary>
-	public class PrimaryKeyColumnSchema : ColumnSchema
+	public class PrimaryKeyColumnSchema : ColumnSchema, IPrimaryKeyColumnSchema
 	{
 		private ForeignKeyColumnSchemaList _foreignKeyReferences;
 		/// <summary>
@@ -22,13 +22,6 @@ namespace SchemaProber
 				return _foreignKeyReferences;
 			}
 		}
-		///// <summary>
-		///// Initializes a new Instance of the PrimaryKeyColumnSchema class.
-		///// </summary>
-		//public PrimaryKeyColumnSchema()
-		//{
-		//	
-		//}
 		/// <summary>
 		/// Initializes a new instance of a PrimaryKeyColumnSchema.
 		/// </summary>
