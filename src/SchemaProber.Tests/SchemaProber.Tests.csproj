@@ -48,7 +48,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SchemaProber.csproj">
+    <ProjectReference Include="..\SchemaProber\SchemaProber.csproj">
       <Project>{C1EC106C-9A0A-48FE-8861-6743D9FCD60A}</Project>
       <Name>SchemaProber</Name>
     </ProjectReference>

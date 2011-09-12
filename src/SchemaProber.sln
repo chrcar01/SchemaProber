@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchemaProber", "SchemaProber.csproj", "{C1EC106C-9A0A-48FE-8861-6743D9FCD60A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchemaProber", "SchemaProber\SchemaProber.csproj", "{C1EC106C-9A0A-48FE-8861-6743D9FCD60A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchemaProber.Tests", "SchemaProber.Tests\SchemaProber.Tests.csproj", "{E1F2478A-DE7E-4BF8-9830-763F80F92158}"
 EndProject
