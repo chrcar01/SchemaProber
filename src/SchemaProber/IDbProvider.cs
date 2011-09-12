@@ -39,9 +39,11 @@ namespace SchemaProber
 		/// <summary>
 		/// Gets a list of columns for a table.
 		/// </summary>
-		/// <param name="table">The TableSchema instance to retrieve columns.</param>
-		/// <returns>A list of columns in the TableSchema instance.</returns>
-		ColumnSchemaList GetColumnSchemas(TableSchema table);
+		/// <param name="tableName">Name of the table.</param>
+		/// <returns>
+		/// A list of columns in the TableSchema instance.
+		/// </returns>
+		ColumnSchemaList GetColumnSchemas(string tableName);
 		/// <summary>
 		/// Gets a list of foreign keys contained in a table.
 		/// </summary>

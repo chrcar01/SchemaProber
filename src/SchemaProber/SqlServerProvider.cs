@@ -49,56 +49,76 @@ namespace SchemaProber
 		{
 			_helper = helper;
 		}
+
+
+		
 		/// <summary>
 		/// Gets all of the columns for a table.
 		/// </summary>
-		/// <param name="table"></param>
-		/// <returns></returns>
-		public virtual ColumnSchemaList GetColumnSchemas(TableSchema table)
+		/// <param name="tableName">Name of the table.</param>
+		/// <returns>
+		/// A list of columns in the TableSchema instance.
+		/// </returns>
+		public virtual ColumnSchemaList GetColumnSchemas(string tableName)
 		{
-			string tableName = table.Name;
-			ColumnSchemaList result = null;
-			string cmdtext = @"
+			var result = new ColumnSchemaList();
+			if (String.IsNullOrEmpty(tableName))
+				return result;
+
+			
+			var sql = @"
 select distinct
 	case when cc.definition is null then 0 else 1 end as is_computed,
 	case when cc.definition is null then 0 else 1 end as formula,
 	isnull(columnproperty(object_id(c.table_name), c.column_name, 'IsIdentity'),0) as is_identity,
-	case when (select tc.constraint_type from information_schema.table_constraints tc where tc.table_name = kcu.table_name and kcu.constraint_name = tc.constraint_name and tc.constraint_type = 'PRIMARY KEY') is null then 0 else 1 end as 'is_primary_key',
-	case when (select tc.constraint_type from information_schema.table_constraints tc where tc.table_name = kcu.table_name and kcu.constraint_name = tc.constraint_name and tc.constraint_type = 'FOREIGN KEY') is null then 0 else 1 end as 'is_foreign_key',
+	(	select count(*)
+		from information_schema.table_constraints tc
+		inner join information_schema.key_column_usage kcu
+			on tc.constraint_name = kcu.constraint_name
+		where tc.table_name = c.table_name
+		and tc.constraint_type = 'PRIMARY KEY'
+		and kcu.column_name = c.column_name) as is_primary_key,
+	(	select count(*)
+		from information_schema.table_constraints tc
+		inner join information_schema.key_column_usage kcu
+			on tc.constraint_name = kcu.constraint_name
+		where tc.table_name = c.table_name
+		and tc.constraint_type = 'FOREIGN KEY'
+		and kcu.column_name = c.column_name) as is_foreign_key,
 	c.*
 from information_schema.columns c
-left join information_schema.key_column_usage kcu
-	on c.table_name = kcu.table_name
-	and c.column_name = kcu.column_name
 left join sys.computed_columns cc
 	on cc.[object_id] = object_id(@table_name)
 	and cc.[name] = c.column_name
 where c.table_name = @table_name
 ";
+			var table = GetTableSchema(tableName);
 			try
 			{
-				using (SqlCommand cmd = new SqlCommand(cmdtext))
+				using (SqlCommand cmd = new SqlCommand(sql))
 				{
 					cmd.Parameters.Add("@table_name", SqlDbType.NVarChar, 128).Value = tableName;
-					using (IDataReader reader = _helper.ExecuteReader(cmd))
+					using (var reader = _helper.ExecuteReader(cmd))
 					{
 						while (reader.Read())
 						{
 							if (result == null) result = new ColumnSchemaList();
-							SqlDbType sqlType = GetSqlDbType(reader["DATA_TYPE"].ToString());
-							Type dataType = GetDataType(reader["DATA_TYPE"].ToString());
-							string name = reader["COLUMN_NAME"].ToString();
-							int length = reader["CHARACTER_MAXIMUM_LENGTH"] != DBNull.Value ? System.Convert.ToInt32(reader["CHARACTER_MAXIMUM_LENGTH"]) : -1;
+
+							var sqlType = GetSqlDbType(reader["DATA_TYPE"].ToString());
+							var dataType = GetDataType(reader["DATA_TYPE"].ToString());
+							var name = reader["COLUMN_NAME"].ToString();
+							var length = reader["CHARACTER_MAXIMUM_LENGTH"] != DBNull.Value ? System.Convert.ToInt32(reader["CHARACTER_MAXIMUM_LENGTH"]) : -1;
 							if (length < 0 && dataType == typeof(string))
 								length = 8000; //patch for varchar(max), not sure if this works in all situations.
 
-							Dictionary<string, object> props = new Dictionary<string, object>();
+							var props = new Dictionary<string, object>();
 							props.Add("is_identity", Convert.ToBoolean(reader["is_identity"]));
 							props.Add("is_primary_key", Convert.ToBoolean(reader["is_primary_key"]));
 							props.Add("is_foreign_key", Convert.ToBoolean(reader["is_foreign_key"]));
 							props.Add("is_nullable", (reader["is_nullable"].ToString().Equals("YES")));
 							props.Add("is_computed", Convert.ToBoolean(reader["is_computed"]));
 							props.Add("formula", (reader["formula"] ?? "").ToString());
+							props.Add("data_type", reader["data_type"].ToString());
 							result.Add(new ColumnSchema(this, table, sqlType, dataType, name, length, props));
 						}
 					}
@@ -249,6 +269,7 @@ and c.table_name = @table_name
 						props.Add("is_primary_key", true);
 						props.Add("is_foreign_key", false);
 						props.Add("is_nullable", (reader["is_nullable"].ToString().Equals("YES")));
+						props.Add("data_type", reader["data_type"].ToString());
 						result.Add(new PrimaryKeyColumnSchema(this, table, sqlType, dataType, name, length, props));
 					}
 				}
@@ -275,7 +296,8 @@ select distinct
 	c.character_maximum_length,
 	c.is_nullable,
 	c.table_name,
-	c.column_name
+	c.column_name,
+	c.data_type
 from sys.foreign_keys as f
 inner join sys.foreign_key_columns as fc
 	on f.object_id = fc.constraint_object_id
@@ -305,6 +327,7 @@ where object_name (f.referenced_object_id) =  @table_name
 						props.Add("foreign_key_column", reader["foreign_key_column"]);
 						props.Add("foreign_key_table", reader["foreign_key_table"]);
 						props.Add("is_nullable", (reader["is_nullable"].ToString().Equals("YES")));
+						props.Add("data_type", reader["data_type"].ToString());
 						result.Add(new ForeignKeyColumnSchema(this, new TableSchema(this, tableName), sqlType, dataType, name, length, props));
 					}
 				}
@@ -349,6 +372,7 @@ where object_name(f.parent_object_id) = @table_name
 						var datatype = GetDataType(reader["data_type"].ToString());
 						var props = new Dictionary<string, object>();
 						props.Add("primary_key_table", reader["primary_key_table"].ToString());
+						props.Add("data_type", reader["data_type"].ToString());
 						var length = reader["CHARACTER_MAXIMUM_LENGTH"] != DBNull.Value ? System.Convert.ToInt32(reader["CHARACTER_MAXIMUM_LENGTH"]) : -1;
 						var column = new ForeignKeyColumnSchema(this, table, sqldatatype, datatype, columnName, length, props);
 						result.Add(column);

@@ -18,6 +18,16 @@ namespace SchemaProber.Tests
 			_helper = new SqlDbHelper(_connectionString);
 			_provider = new SqlServerProvider(_helper);
 		}
+
+		[Test]
+		public void VerifyNonPrimaryKeyColumnsDoesNotContainPrimaryKeys()
+		{
+			var table = _provider.GetTableSchema("Order Details");
+			Assert.AreEqual(2, table.PrimaryKeys.Count);
+			Assert.AreEqual(3, table.NonPrimaryKeyColumns.Count);
+			Assert.AreEqual(5, table.Columns.Count);
+
+		}
 		[Test]
 		public void VerifyMultiplePrimaryKeys()
 		{

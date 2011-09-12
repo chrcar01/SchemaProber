@@ -150,5 +150,17 @@ namespace SchemaProber
 				return _table;
 			}
 		}
+
+
+		/// <summary>
+		/// Gets the name of the database specific type name.
+		/// </summary>
+		public string SqlTypeName
+		{
+			get
+			{
+				return _props["data_type"].ToString();
+			}
+		}
 	}
 }

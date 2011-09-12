@@ -61,7 +61,7 @@ namespace SchemaProber
 			get
 			{
 				if (_columns == null)
-					_columns = Provider.GetColumnSchemas(this);
+					_columns = Provider.GetColumnSchemas(this.Name);
 				return _columns;
 			}
 		}

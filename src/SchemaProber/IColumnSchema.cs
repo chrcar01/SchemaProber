@@ -31,6 +31,10 @@ namespace SchemaProber
 		/// </summary>
 		Type DataType { get; }
 		/// <summary>
+		/// Gets the name of the database specific type name.
+		/// </summary>
+		string SqlTypeName { get; }
+		/// <summary>
 		/// gets the name of the column.
 		/// </summary>
 		string Name { get; }
