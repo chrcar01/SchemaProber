@@ -31,7 +31,7 @@
 			</references>
 			<sources>
 				<include name="${build.dir}/AssemblyInfo.cs" />
-				<include name="./src/**/*.cs" />
+				<include name="./src/SchemaProber/**/*.cs" />
 			</sources>
 		</csc>
 	</target>
