@@ -258,12 +258,14 @@
             <param name="table">The TableSchema instance to retrieve columns.</param>
             <returns>A list of columns in the TableSchema instance.</returns>
         </member>
-        <member name="M:SchemaProber.IDbProvider.GetForeignKeys(SchemaProber.TableSchema)">
+        <member name="M:SchemaProber.IDbProvider.GetForeignKeys(System.String)">
             <summary>
             Gets a list of foreign keys contained in a table.
             </summary>
-            <param name="table">A TableSchema instance representing a database table.</param>
-            <returns>A list of foreign key columns contained within a database table.</returns>
+            <param name="tableName">Name of the table.</param>
+            <returns>
+            A list of foreign key columns contained within a database table.
+            </returns>
         </member>
         <member name="M:SchemaProber.IDbProvider.GetForeignKeyReferences(SchemaProber.PrimaryKeyColumnSchema)">
             <summary>
@@ -272,12 +274,14 @@
             <param name="primaryKey">A primary key.</param>
             <returns>A list of foreign key columns that reference the primary key.</returns>
         </member>
-        <member name="M:SchemaProber.IDbProvider.GetPrimaryKey(SchemaProber.TableSchema)">
+        <member name="M:SchemaProber.IDbProvider.GetPrimaryKeys(System.String)">
             <summary>
             Gets the primary key for a table.
             </summary>
-            <param name="table">A TableSchema instance that represents a database table.</param>
-            <returns>The primary key column of a table.</returns>
+            <param name="tableName">Name of the table.</param>
+            <returns>
+            The primary key column of a table.
+            </returns>
         </member>
         <member name="M:SchemaProber.IDbProvider.GetTableSchemas(System.String)">
             <summary>
@@ -303,6 +307,16 @@
         <member name="P:SchemaProber.IDbProvider.ID">
             <summary>
             Gets or sets the ID of an instance of a class implementing IDbProvider.
+            </summary>
+        </member>
+        <member name="T:SchemaProber.IPrimaryKeyColumnSchema">
+            <summary>
+            Represents a Primary Key ColumnSchema.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.IPrimaryKeyColumnSchema.ForeignKeyReferences">
+            <summary>
+            Gets the foreign key references.
             </summary>
         </member>
         <member name="T:SchemaProber.PrimaryKeyColumnSchema">
@@ -331,6 +345,28 @@
             <summary>
             Represents a list of tables where this primary key is referenced as a foreign key.
             </summary>
+        </member>
+        <member name="T:SchemaProber.PrimaryKeyColumnSchemaList">
+            <summary>
+            List of Primary Key ColumnSchemas.
+            </summary>
+        </member>
+        <member name="M:SchemaProber.PrimaryKeyColumnSchemaList.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SchemaProber.PrimaryKeyColumnSchemaList"/> class.
+            </summary>
+        </member>
+        <member name="M:SchemaProber.PrimaryKeyColumnSchemaList.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SchemaProber.PrimaryKeyColumnSchemaList"/> class.
+            </summary>
+            <param name="capacity">The capacity.</param>
+        </member>
+        <member name="M:SchemaProber.PrimaryKeyColumnSchemaList.#ctor(System.Collections.Generic.IEnumerable{SchemaProber.IPrimaryKeyColumnSchema})">
+            <summary>
+            Initializes a new instance of the <see cref="T:SchemaProber.PrimaryKeyColumnSchemaList"/> class.
+            </summary>
+            <param name="collection">The collection.</param>
         </member>
         <member name="T:SchemaProber.SchemaProberException">
             <summary>
@@ -398,12 +434,14 @@
             <param name="prefix">The prefix of the tables to find.</param>
             <returns>List of tables whose names begin with the specified prefix.</returns>
         </member>
-        <member name="M:SchemaProber.SqlServerProvider.GetPrimaryKey(SchemaProber.TableSchema)">
+        <member name="M:SchemaProber.SqlServerProvider.GetPrimaryKeys(System.String)">
             <summary>
             Gets the primary key for a table.
             </summary>
-            <param name="table"></param>
-            <returns></returns>
+            <param name="tableName">Name of the table.</param>
+            <returns>
+            The primary key column of a table.
+            </returns>
         </member>
         <member name="M:SchemaProber.SqlServerProvider.GetForeignKeyReferences(SchemaProber.PrimaryKeyColumnSchema)">
             <summary>
@@ -412,12 +450,14 @@
             <param name="primaryKey"></param>
             <returns></returns>
         </member>
-        <member name="M:SchemaProber.SqlServerProvider.GetForeignKeys(SchemaProber.TableSchema)">
+        <member name="M:SchemaProber.SqlServerProvider.GetForeignKeys(System.String)">
             <summary>
             Gets all of the foreign keys within a table.
             </summary>
-            <param name="table"></param>
-            <returns></returns>
+            <param name="tableName">Name of the table.</param>
+            <returns>
+            A list of foreign key columns contained within a database table.
+            </returns>
         </member>
         <member name="M:SchemaProber.SqlServerProvider.GetTableEnumData(System.String,System.String,System.String)">
             <summary>
@@ -487,7 +527,7 @@
             Gets all of the columns for the table.
             </summary>
         </member>
-        <member name="P:SchemaProber.TableSchema.PrimaryKey">
+        <member name="P:SchemaProber.TableSchema.PrimaryKeys">
             <summary>
             Gets the primary key for the table.
             </summary>
