@@ -2,7 +2,7 @@
 
 	<property name="build.dir" value="./build" />
 	<property name="lib.dir" value="./lib" />
-	<property name="version" value="1.1.0.0" />
+	<property name="version" value="1.3.0.0" />
 	
 	<target name="build" depends="init">
 		<call target="compile" />

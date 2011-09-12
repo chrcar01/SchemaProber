@@ -1,0 +1,89 @@
+namespace NVelocityProber
+{
+	using System;
+	using System.Data;
+	using System.Data.SqlClient;
+	using SqlTools;
+	
+	public class $entityName
+	{
+#foreach($pc in $propertyColumns)
+		/// <summary>
+		/// Gets or sets $pc.PropertyName.#if($pc.IsNullable)  This property may be null.#end#if($pc.IsAutoIncrement)  This property represents an auto-incrementing column.#end
+
+		/// </summary>
+		public $pc.CSharpAlias $pc.PropertyName { get; set; }
+#end
+	}
+	
+	public class ${entityName}Repository
+	{
+		private IDbHelper _helper;
+		public ${entityName}Repository(IDbHelper helper)
+		{
+			_helper = helper;
+		}
+		public $entityName Find(#foreach($pkArg in $pkArgs)$pkArg.CSharpAlias $pkArg.Name#if($velocityCount < $pkArgs.Count), #end#end)
+		{
+			var sql = @"select * from [$table.Name] where $primaryKeyWhereClause";
+			using (var cmd = new SqlCommand(sql))
+			{
+#foreach($pc in $primaryKeyColumns)
+				cmd.Parameters.Add("@$pc.PropertyName", SqlDbType.$pc.SqlDbType#if($pc.RequiresLengthDefinition), $pc.Length#end).Value = $pc.ArgName;
+#end
+				return _helper.ExecuteSingle<$entityName>(cmd);
+			}
+		}
+		
+		public void Delete(#foreach($pkArg in $pkArgs)$pkArg.CSharpAlias $pkArg.Name#if($velocityCount < $pkArgs.Count), #end#end)
+		{
+			var sql = @"delete from [$table.Name] where $primaryKeyWhereClause";
+			using (var cmd = new SqlCommand(sql))
+			{
+#foreach($pc in $primaryKeyColumns)
+				cmd.Parameters.Add("@$pc.PropertyName", SqlDbType.$pc.SqlDbType#if($pc.RequiresLengthDefinition), $pc.Length#end).Value = $pc.ArgName;
+#end
+				_helper.ExecuteNonQuery(cmd);
+			}
+		}
+		
+		public $entityName Save($entityName entity)
+		{
+			var sql = @"
+if exists(select * from [$table.Name] where $primaryKeyWhereClause)
+update [$table.Name] set
+#foreach($c in $nonKeyPropertyColumns)
+	[$c.ColumnName] = @$c.PropertyName#if($velocityCount < $nonKeyPropertyColumns.Count), #end
+
+#end
+where $primaryKeyWhereClause
+else
+insert into [$table.Name] (
+#foreach($c in $propertyColumns)
+	[$c.ColumnName]#if($velocityCount < $propertyColumns.Count), #end
+
+#end
+)values(
+#foreach($c in $propertyColumns)
+	@$c.PropertyName#if($velocityCount < $propertyColumns.Count), #end
+
+#end
+);
+";
+			using (var cmd = new SqlCommand(sql))
+			{
+#foreach($pc in $propertyColumns)
+#if($pc.IsNullable)
+				if (#if($pc.IsString)String.IsNullOrEmpty(entity.$pc.PropertyName)#else$pc.PropertyName == null#end)
+					cmd.Parameters.Add("@$pc.PropertyName", SqlDbType.$pc.SqlDbType#if($pc.RequiresLengthDefinition), $pc.Length#end).Value = System.DBNull.Value;
+				else
+					cmd.Parameters.Add("@$pc.PropertyName", SqlDbType.$pc.SqlDbType#if($pc.RequiresLengthDefinition), $pc.Length#end).Value = entity.$pc.PropertyName;
+#else
+				cmd.Parameters.Add("@$pc.PropertyName", SqlDbType.$pc.SqlDbType#if($pc.RequiresLengthDefinition), $pc.Length#end).Value = entity.$pc.PropertyName;
+#end#end
+				_helper.ExecuteNonQuery(cmd);
+			}
+			return entity;
+		}
+	}
+}

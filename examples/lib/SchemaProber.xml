@@ -42,6 +42,11 @@
             Gets the .NET datatype for this column.
             </summary>
         </member>
+        <member name="P:SchemaProber.IColumnSchema.SqlTypeName">
+            <summary>
+            Gets the name of the database specific type name.
+            </summary>
+        </member>
         <member name="P:SchemaProber.IColumnSchema.Name">
             <summary>
             gets the name of the column.
@@ -127,6 +132,11 @@
         <member name="P:SchemaProber.ColumnSchema.Table">
             <summary>
             Gets the TableSchema containing this column.
+            </summary>
+        </member>
+        <member name="P:SchemaProber.ColumnSchema.SqlTypeName">
+            <summary>
+            Gets the name of the database specific type name.
             </summary>
         </member>
         <member name="T:SchemaProber.ColumnSchemaList">
@@ -251,12 +261,14 @@
             <param name="tableName">Name of the table.</param>
             <returns>An instance of a TableSchema representing the database table.</returns>
         </member>
-        <member name="M:SchemaProber.IDbProvider.GetColumnSchemas(SchemaProber.TableSchema)">
+        <member name="M:SchemaProber.IDbProvider.GetColumnSchemas(System.String)">
             <summary>
             Gets a list of columns for a table.
             </summary>
-            <param name="table">The TableSchema instance to retrieve columns.</param>
-            <returns>A list of columns in the TableSchema instance.</returns>
+            <param name="tableName">Name of the table.</param>
+            <returns>
+            A list of columns in the TableSchema instance.
+            </returns>
         </member>
         <member name="M:SchemaProber.IDbProvider.GetForeignKeys(System.String)">
             <summary>
@@ -407,12 +419,14 @@
             </summary>
             <param name="helper"></param>
         </member>
-        <member name="M:SchemaProber.SqlServerProvider.GetColumnSchemas(SchemaProber.TableSchema)">
+        <member name="M:SchemaProber.SqlServerProvider.GetColumnSchemas(System.String)">
             <summary>
             Gets all of the columns for a table.
             </summary>
-            <param name="table"></param>
-            <returns></returns>
+            <param name="tableName">Name of the table.</param>
+            <returns>
+            A list of columns in the TableSchema instance.
+            </returns>
         </member>
         <member name="M:SchemaProber.SqlServerProvider.GetTableSchema(System.String)">
             <summary>

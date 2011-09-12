@@ -18,5 +18,12 @@ namespace NVelocityProber
 			win.Owner = this;
 			win.Show();
 		}
+
+		private void RepoGeneratorButton_Click(object sender, RoutedEventArgs e)
+		{
+			var win = new RepoGenerator();
+			win.Owner = this;
+			win.Show();
+		}
 	}
 }

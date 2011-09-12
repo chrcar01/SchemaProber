@@ -7,12 +7,19 @@
 			VerticalAlignment="Center"
 			Orientation="Vertical">
 			<Button
+				Margin="20"
 				Content="Class Generator"
 				Height="50"
 				Width="150"
 				x:Name="ClassGeneratorButton"
 				Click="ClassGeneratorButton_Click" />
-			
+			<Button
+				Margin="20"
+				Content="Repo Generator"
+				Height="50"
+				Width="150"
+				x:Name="RepoGeneratorButton"
+				Click="RepoGeneratorButton_Click" />
 		</StackPanel>
 	</Grid>
 </Window>
