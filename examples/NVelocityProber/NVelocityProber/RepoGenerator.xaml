@@ -35,7 +35,7 @@
 			<TextBox
 				Grid.Row="0"
 				Grid.Column="1"
-				Text="server=.;database=NORTHWIND;integrated security=SSPI;"
+				Text="Data Source=DCDDBS05\Seg02;Initial Catalog=Seg01;integrated security=SSPI;"
 				x:Name="ConnectionStringTextBox" />
 			<Label
 				Grid.Row="1"

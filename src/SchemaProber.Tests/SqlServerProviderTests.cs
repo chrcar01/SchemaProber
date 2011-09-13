@@ -3,6 +3,7 @@ using SqlTools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data;
 
 namespace SchemaProber.Tests
 {
@@ -18,7 +19,15 @@ namespace SchemaProber.Tests
 			_helper = new SqlDbHelper(_connectionString);
 			_provider = new SqlServerProvider(_helper);
 		}
-
+		[Test]
+		public void Temp()
+		{
+			var connectionString = @"Data Source=DCDDBS05\Seg02;Initial Catalog=Seg01;integrated security=SSPI;";
+			var helper = new SqlDbHelper(connectionString);
+			var provider = new SqlServerProvider(helper);
+			var table = provider.GetTableSchema("PR_BK_PARAMS");
+			var keys = table.PrimaryKeys;
+		}
 		[Test]
 		public void VerifyNonPrimaryKeyColumnsDoesNotContainPrimaryKeys()
 		{

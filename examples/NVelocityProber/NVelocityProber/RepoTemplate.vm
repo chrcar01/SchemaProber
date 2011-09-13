@@ -49,6 +49,7 @@ namespace NVelocityProber
 		
 		public $entityName Save($entityName entity)
 		{
+			#region sql
 			var sql = @"
 if exists(select * from [$table.Name] where $primaryKeyWhereClause)
 update [$table.Name] set
@@ -70,17 +71,22 @@ insert into [$table.Name] (
 #end
 );
 ";
+			#endregion
+			
 			using (var cmd = new SqlCommand(sql))
 			{
+				#region parameters
 #foreach($pc in $propertyColumns)
 #if($pc.IsNullable)
-				if (#if($pc.IsString)String.IsNullOrEmpty(entity.$pc.PropertyName)#else$pc.PropertyName == null#end)
+				if (#if($pc.IsString)String.IsNullOrEmpty(entity.$pc.PropertyName)#else entity.$pc.PropertyName == null#end)
 					cmd.Parameters.Add("@$pc.PropertyName", SqlDbType.$pc.SqlDbType#if($pc.RequiresLengthDefinition), $pc.Length#end).Value = System.DBNull.Value;
 				else
 					cmd.Parameters.Add("@$pc.PropertyName", SqlDbType.$pc.SqlDbType#if($pc.RequiresLengthDefinition), $pc.Length#end).Value = entity.$pc.PropertyName;
 #else
 				cmd.Parameters.Add("@$pc.PropertyName", SqlDbType.$pc.SqlDbType#if($pc.RequiresLengthDefinition), $pc.Length#end).Value = entity.$pc.PropertyName;
 #end#end
+				#endregion
+				
 				_helper.ExecuteNonQuery(cmd);
 			}
 			return entity;

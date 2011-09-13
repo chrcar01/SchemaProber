@@ -260,8 +260,9 @@ and c.table_name = @table_name
 				{
 					while (reader.Read())
 					{
-						var sqlType = Enum<SqlDbType>.Parse(reader["DATA_TYPE"].ToString());
-						var dataType = GetDataType(reader["DATA_TYPE"].ToString());
+						var sqlDataType = reader["DATA_TYPE"].ToString();
+						var sqlType = sqlDataType == "numeric" ? SqlDbType.Decimal : Enum<SqlDbType>.Parse(sqlDataType);
+						var dataType = GetDataType(sqlDataType);
 						var name = reader["COLUMN_NAME"].ToString();
 						var props = new Dictionary<string, object>();
 						props.Add("is_identity", Convert.ToBoolean(reader["is_identity"]));
@@ -273,7 +274,7 @@ and c.table_name = @table_name
 						result.Add(new PrimaryKeyColumnSchema(this, table, sqlType, dataType, name, length, props));
 					}
 				}
-				
+
 			}
 			return result;
 		}

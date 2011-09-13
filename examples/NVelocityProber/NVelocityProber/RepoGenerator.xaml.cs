@@ -21,12 +21,25 @@ namespace NVelocityProber
 			Close();
 		}
 
+		private IEnumerable<TableSchema> _tables;
+		private string _connectionString;
 		private void TableComboBox_DropDownOpened(object sender, EventArgs e)
 		{
+			if (_tables != null 
+				&& _tables.Count() > 0 
+				&& !String.IsNullOrEmpty(_connectionString) 
+				&& !String.IsNullOrEmpty(ConnectionStringTextBox.Text) 
+				&& _connectionString.Equals(ConnectionStringTextBox.Text))
+			{
+				TableComboBox.ItemsSource = _tables;
+				return;
+			}
+
 			var helper = new SqlDbHelper(ConnectionStringTextBox.Text);
 			var provider = new SqlServerProvider(helper);
 			var tables = provider.GetTableSchemas();
-			TableComboBox.ItemsSource = tables.OrderBy(x => x.Name);
+			_tables = tables.OrderBy(x => x.Name);
+			TableComboBox.ItemsSource = _tables;
 		}
 
 		private void TableComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -37,9 +50,12 @@ namespace NVelocityProber
 
 
 			var pkArgs = new List<PrimaryKeyMethodArg>();
-			foreach (var pk in selectedTable.PrimaryKeys)
+			if (selectedTable.PrimaryKeys.Count > 0)
 			{
-				pkArgs.Add(new PrimaryKeyMethodArg { Name = Inflector.Camelize(pk.Name), CSharpAlias = TypeTranslator.ToCSharpAlias(pk.DataType) });
+				foreach (var pk in selectedTable.PrimaryKeys)
+				{
+					pkArgs.Add(new PrimaryKeyMethodArg { Name = Inflector.Camelize(pk.Name), CSharpAlias = TypeTranslator.ToCSharpAlias(pk.DataType) });
+				}
 			}
 
 			var propertyColumns = new List<PropertyColumn>();			
@@ -64,7 +80,7 @@ namespace NVelocityProber
 			foreach (var pk in selectedTable.PrimaryKeys)
 			{
 				if (!String.IsNullOrEmpty(primaryKeyWhereClause)) primaryKeyWhereClause += " AND ";
-				primaryKeyWhereClause += String.Format("[{0}] = @{1}", pk.Name, Inflector.Pascalize(pk.Name.Replace(" ", "")));
+				primaryKeyWhereClause += String.Format("[{0}] = @{1}", pk.Name, pk.Name.Replace(" ", ""));
 			}
 			
 			var entityName = Inflector.Pascalize(selectedTable.Name.Replace(" ", ""));
@@ -86,7 +102,7 @@ namespace NVelocityProber
 			var pc = new PropertyColumn();
 			pc.ColumnName = col.Name;
 			pc.Length = col.Length;
-			pc.PropertyName = Inflector.Pascalize(col.Name.Replace(" ", ""));
+			pc.PropertyName = col.Name; // Inflector.Pascalize(col.Name.Replace(" ", ""));
 			pc.ArgName = Inflector.Camelize(col.Name.Replace(" ", ""));
 			pc.SqlDbType = TypeTranslator.ToSqlDbType(col.SqlTypeName).ToString();
 			pc.IsNullable = col.Nullable;
