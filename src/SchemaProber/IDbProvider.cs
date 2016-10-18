@@ -9,13 +9,24 @@ namespace SchemaProber
 	public interface IDbProvider
 	{
 		/// <summary>
+		/// Gets the view schema.
+		/// </summary>
+		/// <param name="name">The name.</param>
+		/// <returns></returns>
+		ViewSchema GetViewSchema(string name);
+		/// <summary>
+		/// Gets all of the viewsin a database.
+		/// </summary>
+		/// <returns></returns>
+		ViewSchemaList GetViewSchemas();
+		/// <summary>
 		/// Gets the connectionstring the implementing instance is using.
 		/// </summary>
 		string ConnectionString { get; }
 		/// <summary>
 		/// Gets or sets the ID of an instance of a class implementing IDbProvider.
 		/// </summary>
-		string ID { get;set; }
+		string ID { get; set; }
 		/// <summary>
 		/// Gets a list of tables in a database.
 		/// </summary>

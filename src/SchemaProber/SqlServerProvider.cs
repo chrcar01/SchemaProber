@@ -68,8 +68,8 @@ namespace SchemaProber
 			
 			var sql = @"
 select distinct
-	case when cc.definition is null then 0 else 1 end as is_computed,
-	case when cc.definition is null then 0 else 1 end as formula,
+	isnull(columnproperty(object_id(c.table_name), c.column_name, 'IsComputed'),0) as is_computed,
+	isnull(columnproperty(object_id(c.table_name), c.column_name, 'IsComputed'),0) as formula,
 	isnull(columnproperty(object_id(c.table_name), c.column_name, 'IsIdentity'),0) as is_identity,
 	(	select count(*)
 		from information_schema.table_constraints tc
@@ -87,9 +87,6 @@ select distinct
 		and kcu.column_name = c.column_name) as is_foreign_key,
 	c.*
 from information_schema.columns c
-left join sys.computed_columns cc
-	on cc.[object_id] = object_id(@table_name)
-	and cc.[name] = c.column_name
 where c.table_name = @table_name
 ";
 			var table = GetTableSchema(tableName);
@@ -200,6 +197,34 @@ where c.table_name = @table_name
 				{
 					if (result == null) result = new TableSchemaList();
 					result.Add(new TableSchema(this, reader["TABLE_NAME"].ToString()));
+				}
+			}
+			return result;
+		}
+		/// <summary>
+		/// Gets the view schema.
+		/// </summary>
+		/// <param name="name">The name.</param>
+		/// <returns></returns>
+		public ViewSchema GetViewSchema(string name)
+		{
+			return new ViewSchema(this, name);
+		}
+		
+		/// <summary>
+		/// Gets all of the viewsin a database.
+		/// </summary>
+		/// <returns></returns>
+		public virtual ViewSchemaList GetViewSchemas()
+		{
+			ViewSchemaList result = null;
+			string cmdtext = @"select table_name from information_schema.views where table_name not like 'sys%'";
+			using (IDataReader reader = this._helper.ExecuteReader(cmdtext))
+			{
+				while (reader.Read())
+				{
+					if (result == null) result = new ViewSchemaList();
+					result.Add(new ViewSchema(this, reader.GetString(0)));
 				}
 			}
 			return result;

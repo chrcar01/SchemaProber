@@ -10,7 +10,7 @@ namespace SchemaProber.Tests
 	[TestFixture]
 	public class SqlServerProviderTests
 	{
-		private static readonly string _connectionString = "server=.;database=northwind;integrated security=true;";
+		private static readonly string _connectionString = "server=sx-alessandra;database=RipTrack2;user id=sa;password=d0v3R;";
 		private IDbHelper _helper;
 		private IDbProvider _provider;
 		[TestFixtureSetUp]
@@ -20,40 +20,13 @@ namespace SchemaProber.Tests
 			_provider = new SqlServerProvider(_helper);
 		}
 		[Test]
-		public void Temp()
+		public void CanGetTables()
 		{
-			var connectionString = @"Data Source=DCDDBS05\Seg02;Initial Catalog=Seg01;integrated security=SSPI;";
-			var helper = new SqlDbHelper(connectionString);
-			var provider = new SqlServerProvider(helper);
-			var table = provider.GetTableSchema("PR_BK_PARAMS");
-			var keys = table.PrimaryKeys;
-		}
-		[Test]
-		public void VerifyNonPrimaryKeyColumnsDoesNotContainPrimaryKeys()
-		{
-			var table = _provider.GetTableSchema("Order Details");
-			Assert.AreEqual(2, table.PrimaryKeys.Count);
-			Assert.AreEqual(3, table.NonPrimaryKeyColumns.Count);
-			Assert.AreEqual(5, table.Columns.Count);
-
-		}
-		[Test]
-		public void VerifyMultiplePrimaryKeys()
-		{
-			var primaryKeys = _provider.GetPrimaryKeys("Order Details");
-			Assert.AreEqual(2, primaryKeys.Count);			
-		}
-		[Test]
-		public void VerifyForeignKeys()
-		{
-			var foreignKeys = _provider.GetForeignKeys("Products");
-			Assert.AreEqual(2, foreignKeys.Count);
-		}
-		[Test]
-		public void CanGetTableSchemas()
-		{
-			var tables = _provider.GetTableSchemas();
-			Assert.AreEqual(13, tables.Count());
+			var table = _provider.GetTableSchema("repairheader");
+			foreach (PrimaryKeyColumnSchema pk in table.PrimaryKeys)
+			{
+				Console.WriteLine("{0}, {1}", pk.Name, pk.IsIdentity);
+			}
 		}
 	}
 }

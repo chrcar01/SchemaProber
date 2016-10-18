@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace SchemaProber
 {
+
 	/// <summary>
 	/// Represents a database table.
 	/// </summary>

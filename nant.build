@@ -2,7 +2,7 @@
 
 	<property name="build.dir" value="./build" />
 	<property name="lib.dir" value="./lib" />
-	<property name="version" value="1.4.0.0" />
+	<property name="version" value="1.5.0.0" />
 	
 	<target name="build" depends="init">
 		<call target="compile" />
@@ -27,7 +27,7 @@
 			doc="${build.dir}/${project::get-name()}.xml"
 			warninglevel="4">
 			<references>
-				<include name="${lib.dir}/SqlTools.dll" />
+				<include name="./src/packages/SqlTools.1.5.1/lib/net40/SqlTools.dll" />
 			</references>
 			<sources>
 				<include name="${build.dir}/AssemblyInfo.cs" />
@@ -51,7 +51,7 @@
 				<attribute type="AssemblyFileVersionAttribute" value="${version}" />
 				<attribute type="AssemblyTitleAttribute" value="SchemaProber" />
 				<attribute type="AssemblyDescriptionAttribute" value="SchemaProber" />
-				<attribute type="AssemblyCopyrightAttribute" value="Copyright (c) 2011, Chris Carter" />
+				<attribute type="AssemblyCopyrightAttribute" value="Copyright (c) 2016, Chris Carter" />
 				<attribute type="AssemblyCompanyAttribute" value="Chris Carter" />
 				<attribute type="ApplicationNameAttribute" value="SchemaProber" />
 			</attributes>
@@ -63,7 +63,7 @@
 	
 	<target name="copy-lib">
 		<copy todir="${build.dir}">
-			<fileset basedir="${lib.dir}">
+			<fileset basedir=".\src\packages\SqlTools.1.5.1\lib\net40\">
 				<include name="SqlTools.*" />
 			</fileset>
 		</copy>

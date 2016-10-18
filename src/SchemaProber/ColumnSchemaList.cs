@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SchemaProber
 {
@@ -17,7 +18,7 @@ namespace SchemaProber
 		{
 			get
 			{
-				return this.Find(delegate(IColumnSchema col) { return col.Name == columnName; });
+				return this.FirstOrDefault(x => x.Name.Equals(columnName, StringComparison.OrdinalIgnoreCase));
 			}
 		}
 		/// <summary>
